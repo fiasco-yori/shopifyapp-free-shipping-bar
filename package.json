@@ -27,16 +27,20 @@
     "isomorphic-fetch": "^2.2.1",
     "js-cookie": "^2.2.1",
     "koa": "^2.11.0",
+    "koa-mount": "^4.0.0",
     "koa-router": "^8.0.8",
     "koa-session": "^5.13.1",
+    "koa-static": "^5.0.0",
     "next": "^9.3.5",
     "node-fetch": "^2.6.0",
     "nonce": "^1.0.4",
+    "path": "^0.12.7",
     "react": "^16.13.1",
     "react-apollo": "^3.1.5",
     "react-dom": "^16.13.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
+    "shopify-api-node": "^3.3.1",
     "store-js": "^2.0.4"
   }
 }

@@ -4,6 +4,7 @@ const next = require('next');
 const Koa = require('koa');
 const Router = require('koa-router');
 
+var serve = require("koa-static");
 const { default: createShopifyAuth } = require('@shopify/koa-shopify-auth');
 const { verifyRequest } = require('@shopify/koa-shopify-auth');
 const session = require('koa-session');
@@ -12,9 +13,7 @@ const { default: graphQLProxy } = require('@shopify/koa-shopify-graphql-proxy');
 const { ApiVersion } = require('@shopify/koa-shopify-graphql-proxy');
 const {receiveWebhook, registerWebhook} = require('@shopify/koa-shopify-webhooks');
 
-const fetch = require('node-fetch');
 const ShopifyAPIClient = require("shopify-api-node");
-
 dotenv.config();
 
 const port = parseInt(process.env.PORT, 10) || 3000;
@@ -22,16 +21,13 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-
 const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, HOST, } = process.env;
-
-const add_fsb_url = require('./server/get_fsb');
 app.prepare().then(() => {
     const server = new Koa();
     const router = new Router();
     server.use(session({ secure: true, sameSite: 'none' }, server));
     server.keys = [SHOPIFY_API_SECRET_KEY];
-    
+    server.use(serve('./'));
     server.use(
       createShopifyAuth({
         apiKey: SHOPIFY_API_KEY,
@@ -58,27 +54,6 @@ app.prepare().then(() => {
             console.log('Failed to register webhook', registration.result);
           }
 
-          const scriptTagBody = {
-            "script_tag": {
-              "event": "onload",
-              "src": `${HOST}/add-fsb.js`
-            }
-          }
-
-          const { session, req: { query, method, body }} = ctx;
-          const url = `https://${shop}/admin/api/2020-04/admin/script_tags.json`;
-          
-          const result = await fetch(url, {
-            method,
-            scriptTagBody,
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Shopify-Access-Token': accessToken,
-            },
-          });
-          const data = await result.text();
-          console.log(data);
-
           const shopify = new ShopifyAPIClient({
             shopName: shop,
             accessToken: accessToken,
@@ -86,12 +61,12 @@ app.prepare().then(() => {
           shopify.scriptTag
             .create({
               event: "onload",
-              src: "https://cdn.jsdelivr.net/npm/riot@3.13/riot.min.js",
+              src: `${HOST}/add-fsb.js`,
             })
             .then(
               (response) => {
                 console.log(`scriptTag created`);
-                next();
+                //next();
               },
               (err) => {
                 console.log(
@@ -100,7 +75,7 @@ app.prepare().then(() => {
               },
             );
 
-        },
+          },
       }),
     );
 
