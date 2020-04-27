@@ -27,12 +27,19 @@ app.prepare().then(() => {
     const router = new Router();
     server.use(session({ secure: true, sameSite: 'none' }, server));
     server.keys = [SHOPIFY_API_SECRET_KEY];
+
     server.use(serve('./'));
+    
     server.use(
       createShopifyAuth({
         apiKey: SHOPIFY_API_KEY,
         secret: SHOPIFY_API_SECRET_KEY,
-        scopes: ['read_products','write_products','write_script_tags'],
+        scopes: [
+          'read_products',
+          'write_products',
+          'read_script_tags',
+          'write_script_tags'
+        ],
         async  afterAuth(ctx) {
           const { shop, accessToken } = ctx.session;
           ctx.cookies.set('shopOrigin', shop, {
@@ -40,6 +47,7 @@ app.prepare().then(() => {
             secure: true,
             sameSite: 'none'
           });
+
           const registration = await registerWebhook({
             address: `${HOST}/webhooks/products/create`,
             topic: 'PRODUCTS_CREATE',
@@ -47,7 +55,6 @@ app.prepare().then(() => {
             shop,
             apiVersion: ApiVersion.October19
           });
-       
           if (registration.success) {
             console.log('Successfully registered webhook!');
           } else {
@@ -61,12 +68,11 @@ app.prepare().then(() => {
           shopify.scriptTag
             .create({
               event: "onload",
-              src: `${HOST}/add-fsb.js`,
+              src: `${HOST}/freeshipping-bar.js`,
             })
             .then(
               (response) => {
                 console.log(`scriptTag created`);
-                //next();
               },
               (err) => {
                 console.log(
@@ -75,15 +81,13 @@ app.prepare().then(() => {
               },
             );
 
+            ctx.redirect("/");
           },
       }),
     );
 
-    
     const webhook = receiveWebhook({secret: SHOPIFY_API_SECRET_KEY});
-    router.post('/webhooks/products/create', webhook, (ctx) => {
-      console.log('received webhook: ', ctx.state.webhook);
-    });
+    require("./server/routes/webhookRoutes")(router, webhook);
 
     server.use(graphQLProxy({version: ApiVersion.April20}))
     router.get('*', verifyRequest(), async (ctx) => {
@@ -91,7 +95,6 @@ app.prepare().then(() => {
       ctx.respond = false;
       ctx.res.statusCode = 200;
     });
-
     server.use(router.allowedMethods());
     server.use(router.routes());
     server.listen(port, () => {
