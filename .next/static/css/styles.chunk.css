@@ -10669,5 +10669,21 @@ body{
   opacity:0.8;
   text-align:center; }
 
+.Polaris-Layout {
+    margin-top: 0!important;
+}
+.fsb_tp_container {
+    cursor: pointer;
+    width: 100%;
+}
+.fsb_tb_content {
+    overflow:hidden; width: 100%; border: none;
+}
+.fsb_msg_price {
+    height: 100%;
+    text-align: center;
+    align-items: center;
+    display: flex;
+}
 
 /*# sourceMappingURL=styles.chunk.css.map*/

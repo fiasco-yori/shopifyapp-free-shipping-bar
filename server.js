@@ -60,7 +60,6 @@ app.prepare().then(() => {
           } else {
             console.log('Failed to register webhook', registration.result);
           }
-
           const shopify = new ShopifyAPIClient({
             shopName: shop,
             accessToken: accessToken,
