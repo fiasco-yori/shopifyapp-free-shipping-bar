@@ -106,10 +106,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _shopify_polaris__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @shopify/polaris */ "@shopify/polaris");
 /* harmony import */ var _shopify_polaris__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _styles_free_shipping_bar_module_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./styles/free-shipping-bar.module.css */ "./pages/styles/free-shipping-bar.module.css");
-/* harmony import */ var _styles_free_shipping_bar_module_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_styles_free_shipping_bar_module_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! graphql */ "graphql");
-/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(graphql__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! prop-types */ "prop-types");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _styles_free_shipping_bar_module_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./styles/free-shipping-bar.module.css */ "./pages/styles/free-shipping-bar.module.css");
+/* harmony import */ var _styles_free_shipping_bar_module_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_styles_free_shipping_bar_module_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! graphql */ "graphql");
+/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(graphql__WEBPACK_IMPORTED_MODULE_4__);
 
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
@@ -119,11 +121,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
-  constructor(...args) {
-    super(...args);
 
-    _defineProperty(this, "state", {
+
+class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
+  constructor(props) {
+    super(props);
+
+    _defineProperty(this, "handleSubmit", () => {
+      this.setState({
+        name: this.state.name,
+        goal: this.state.goal
+      });
+      console.log('submission', this.state);
+    });
+
+    _defineProperty(this, "handleChange", field => {
+      return value => this.setState({
+        [field]: value
+      });
+    });
+
+    this.state = {
+      isColorPickerOpen: false,
+      textValue: "",
       bars: [{
         id: 1,
         name: 'My first shipping bar 1',
@@ -202,22 +222,75 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
       position: 'top_push_sticky_v1',
       currency: '$',
       cur_symbol: '$',
-      is_auto_cur: 0
-    });
+      is_auto_cur: 0,
+      bg_color: '#312e59'
+    };
+    this.state.textValue = this.props.color;
+    this.toggleColorPicker = this.toggleColorPicker.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
+  }
 
-    _defineProperty(this, "handleSubmit", () => {
+  hexToRgb(hex) {
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+
+    if (hex) {
+      hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+        return r + r + g + g + b + b;
+      });
+    }
+
+    const returnResult = {
+      red: 0,
+      green: 0,
+      blue: 0
+    };
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+    if (result) {
+      returnResult = {
+        red: parseInt(result[1], 16),
+        green: parseInt(result[2], 16),
+        blue: parseInt(result[3], 16)
+      };
+    }
+
+    return returnResult; // return result ? {
+    //     red: parseInt(result[1], 16),
+    //     green: parseInt(result[2], 16),
+    //     blue: parseInt(result[3], 16)
+    // } : null;
+  }
+
+  toggleColorPicker() {
+    this.setState({
+      isColorPickerOpen: !this.state.isColorPickerOpen
+    });
+  }
+
+  formatHexToHsb(hex) {
+    return Object(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["rgbToHsb"])(this.hexToRgb(hex));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.color !== this.props.color) {
       this.setState({
-        name: this.state.name,
-        goal: this.state.goal
+        textValue: nextProps.color
       });
-      console.log('submission', this.state);
+    }
+  }
+
+  handleTextChange(value) {
+    this.setState({
+      textValue: value
     });
 
-    _defineProperty(this, "handleChange", field => {
-      return value => this.setState({
-        [field]: value
-      });
-    });
+    try {
+      let color = this.hexToRgb(value);
+
+      if (color) {
+        this.props.onChange(value);
+      }
+    } catch (err) {}
   }
 
   render() {
@@ -238,7 +311,9 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
       position_options,
       currencies,
       currency,
-      cur_symbol
+      cur_symbol,
+      is_auto_cur,
+      bg_color
     } = this.state;
     return __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Page"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"].Section, {
       oneHalf: true
@@ -477,9 +552,30 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
       value: is_auto_cur,
       helpText: "NOTE: If native Shopify multi-currencies is configured on your store, this Currency Configuration will be disabled. You can enable this if your website supports auto-currency detection. FSB auto-converts the goal value to the visitors' local currency"
     }))))), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"].Section, null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Card"], {
-      title: "Currency Configuration",
+      title: "Style Configuration",
       sectioned: true
-    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"].Group, null))))), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Stack"], {
+    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"].Group, null, __jsx("div", null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Popover"], {
+      active: this.state.isColorPickerOpen,
+      onClose: this.toggleColorPicker,
+      activator: __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["TextField"], {
+        label: this.props.label,
+        onChange: this.handleTextChange,
+        value: this.state.textValue,
+        connectedRight: __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+          onClick: this.toggleColorPicker
+        }, __jsx("div", {
+          className: "color-preview",
+          style: {
+            backgroundColor: this.props.color,
+            width: '20px',
+            height: '20px'
+          }
+        }))
+      })
+    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["ColorPicker"], {
+      onChange: color => this.props.onChange(Object(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["hsbToHex"])(color)),
+      color: this.formatHexToHsb(this.props.color)
+    })))))))), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Stack"], {
       distribution: "trailing"
     }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
       primary: true,
@@ -509,6 +605,12 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
   }
 
 }
+
+_defineProperty(FreeShippingBar, "propTypes", {
+  color: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.string,
+  label: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.string,
+  onChange: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.func
+});
 
 /* harmony default export */ __webpack_exports__["default"] = (FreeShippingBar);
 
@@ -556,6 +658,17 @@ module.exports = require("@shopify/polaris");
 /***/ (function(module, exports) {
 
 module.exports = require("graphql");
+
+/***/ }),
+
+/***/ "prop-types":
+/*!*****************************!*\
+  !*** external "prop-types" ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("prop-types");
 
 /***/ }),
 

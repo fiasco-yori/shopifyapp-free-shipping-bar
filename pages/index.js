@@ -14,53 +14,134 @@ import {
   Badge,
   Select,
   Checkbox,
-  ChoiceList
-
+  ChoiceList,
+  ColorPicker,
+  Popover,
 } from '@shopify/polaris';
+import {hsbToHex, rgbToHsb} from '@shopify/polaris';
+
+import PropTypes from 'prop-types';
+
 
 import fsbStyles from './styles/free-shipping-bar.module.css';
 import { LoneAnonymousOperationRule } from 'graphql';
 
-class FreeShippingBar extends React.Component {
-  state = {
-      bars: [
-          { id: 1, name: 'My first shipping bar 1',active:0 },
-          { id: 2, name: 'My first shipping bar 2',active:1 },
-      ],
-      templates: [
-        { id: 1, name: 'My first shipping template 1', img: 'template1.png' },
-        { id: 2, name: 'My first shipping template 2', img: 'template1.png' },
-        { id: 3, name: 'My first shipping template 2', img: 'template1.png' },
-        { id: 4, name: 'My first shipping template 2', img: 'template1.png' },
-        { id: 5, name: 'My first shipping template 2', img: 'template1.png' },
-        { id: 6, name: 'My first shipping template 2', img: 'template1.png' },
-      ],
-      position_options : [
-          {label: 'Top bar pushes down the rest of the page', value: 'top_push_v1'},
-          {label: 'Top bar pushes down the rest of the page (always visible while scrolling)', value: 'top_push_sticky_v1'},
-          {label: 'Top bar overlaps top of the page', value: 'top_cover_nonsticky'},
-          {label: ' Top bar overlaps top of the page (always visible while scrolling)', value: 'top_cover'},
-          {label: 'Bottom bar overlaps bottom of the page (always visible while scrolling)', value: 'bottom_cover'},
-          {label: 'Manual Placement – Allows manual insertion of the bar’s code into your theme.', value: 'inserted'},
-      ],
-      name: 'My first free shipping bar',
-      goal: '100',
-      goal_two: '150',
-      init_msg_start: 'Free shipping for orders over',
-      init_msg_end: '',
-      goal_msg: "Congratulations! You've got free shipping",
-      progress_msg_start: 'Only',
-      progress_msg_end: ' away from free shipping',
-      link_opt: 0,
-      link_url: 'https://apps.shopify.com/partners/me',
-      link_new: 0,
-      close_btn: 0,
-      position: 'top_push_sticky_v1'
 
-  };
+class FreeShippingBar extends React.Component {
+  static propTypes = {
+    color: PropTypes.string,
+    label: PropTypes.string,
+    onChange: PropTypes.func
+  }
+  constructor(props){
+      super(props);
+      this.state = {
+        isColorPickerOpen: false,
+        textValue: "",
+
+        bars: [
+            { id: 1, name: 'My first shipping bar 1',active:0 },
+            { id: 2, name: 'My first shipping bar 2',active:1 },
+        ],
+        templates: [
+          { id: 1, name: 'My first shipping template 1', img: 'template1.png' },
+          { id: 2, name: 'My first shipping template 2', img: 'template1.png' },
+          { id: 3, name: 'My first shipping template 2', img: 'template1.png' },
+          { id: 4, name: 'My first shipping template 2', img: 'template1.png' },
+          { id: 5, name: 'My first shipping template 2', img: 'template1.png' },
+          { id: 6, name: 'My first shipping template 2', img: 'template1.png' },
+        ],
+        position_options : [
+            {label: 'Top bar pushes down the rest of the page', value: 'top_push_v1'},
+            {label: 'Top bar pushes down the rest of the page (always visible while scrolling)', value: 'top_push_sticky_v1'},
+            {label: 'Top bar overlaps top of the page', value: 'top_cover_nonsticky'},
+            {label: ' Top bar overlaps top of the page (always visible while scrolling)', value: 'top_cover'},
+            {label: 'Bottom bar overlaps bottom of the page (always visible while scrolling)', value: 'bottom_cover'},
+            {label: 'Manual Placement – Allows manual insertion of the bar’s code into your theme.', value: 'inserted'},
+        ],
+        currencies : [
+          {label: 'United states - USD', value: '$'},
+          {label: 'United states - USD', value: '$'},
+          {label: 'United states - USD', value: '$'}
+        ],
+        name: 'My first free shipping bar',
+        goal: '100',
+        goal_two: '150',
+        init_msg_start: 'Free shipping for orders over',
+        init_msg_end: '',
+        goal_msg: "Congratulations! You've got free shipping",
+        progress_msg_start: 'Only',
+        progress_msg_end: ' away from free shipping',
+        link_opt: 0,
+        link_url: 'https://apps.shopify.com/partners/me',
+        is_link_new: 0,
+        is_close_btn: 0,
+        position: 'top_push_sticky_v1',
+        currency: '$',
+        cur_symbol: '$',
+        is_auto_cur: 0,
+        bg_color: '#312e59'
+    };
+
+    this.state.textValue = this.props.color;
+    this.toggleColorPicker = this.toggleColorPicker.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
+  }
+  
+  hexToRgb(hex) {
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    if(hex) {
+      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+          return r + r + g + g + b + b;
+      });
+    }
+    
+    const returnResult = {
+      red: 0,
+      green: 0,
+      blue: 0
+    };
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (result) {
+      returnResult = {
+        red: parseInt(result[1], 16),
+        green: parseInt(result[2], 16),
+        blue: parseInt(result[3], 16)
+      };
+    }
+    return returnResult;
+    // return result ? {
+    //     red: parseInt(result[1], 16),
+    //     green: parseInt(result[2], 16),
+    //     blue: parseInt(result[3], 16)
+    // } : null;
+  }
+  toggleColorPicker(){
+    this.setState({isColorPickerOpen: !this.state.isColorPickerOpen});
+  }
+  formatHexToHsb(hex){
+    return rgbToHsb(this.hexToRgb(hex));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.color !== this.props.color){
+      this.setState({textValue: nextProps.color});
+    } 
+  }
+
+  handleTextChange(value){
+    this.setState({textValue: value});
+    try{
+      let color = this.hexToRgb(value);
+      if(color){
+        this.props.onChange(value);
+      }
+    }catch(err){
+    }
+  }
 
   render() {
-    const { name, goal,goal_two, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, goal_msg, link_opt, link_url,link_new, close_btn, position } = this.state;
+    const { name, goal,goal_two, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, goal_msg, link_opt, link_url,is_link_new, is_close_btn, position, position_options, currencies, currency,cur_symbol,is_auto_cur, bg_color } = this.state;
 
     return (
         <Page>
@@ -286,8 +367,8 @@ class FreeShippingBar extends React.Component {
                             />
                             <Checkbox
                               label="Open the link in a NEW tab when clicked"
-                              checked={link_new}
-                              onChange={this.handleChange('link_new')}
+                              checked={is_link_new}
+                              onChange={this.handleChange('is_link_new')}
                             />
                             <Select
                               label="Include Close Button:"
@@ -295,15 +376,15 @@ class FreeShippingBar extends React.Component {
                                 {label: 'YES', value: 1},
                                 {label: 'NO', value: 0},
                               ]}
-                              onChange={this.handleChange('close_btn')}
-                              value={close_btn}
+                              onChange={this.handleChange('is_close_btn')}
+                              value={is_close_btn}
                               helpText='Places an "x" button on the bar so that users can close it manually'
                             />
                             <ChoiceList
                               title="Select a Display Position:"
                               choices={position_options}
                               selected={position}
-                              onChange={position}
+                              onChange={this.handleChange('position')}
                             />
                           </FormLayout>
                       </Card>
@@ -313,7 +394,52 @@ class FreeShippingBar extends React.Component {
             <Layout.Section>
               <Card title="Currency Configuration" sectioned>
                 <FormLayout>
-
+                    <Select
+                      label="Currency:"
+                      options={currencies}
+                      onChange={this.handleChange('currency')}
+                      value={currency}
+                      helpText='Places an "x" button on the bar so that users can close it manually'
+                     />      
+                     <TextField
+                              value={cur_symbol}
+                              onChange={this.handleChange('cur_symbol')}
+                              label="Currency Symbol::"
+                              type="text"
+                      />         
+                      <Select
+                      label="Auto Currency Conversion::"
+                      options={[
+                        {label: 'OFF', value: 0},
+                        {label: 'ON', value: 1},
+                      ]}
+                      onChange={this.handleChange('is_auto_cur')}
+                      value={is_auto_cur}
+                      helpText="NOTE: If native Shopify multi-currencies is configured on your store, this Currency Configuration will be disabled. You can enable this if your website supports auto-currency detection. FSB auto-converts the goal value to the visitors' local currency"
+                      />
+                </FormLayout>
+              </Card>
+            </Layout.Section>
+          </Layout>
+          <Layout>
+            <Layout.Section>
+              <Card title="Style Configuration" sectioned>
+                <FormLayout>
+                    <FormLayout.Group>
+                      <div>
+                        <Popover
+                          active={this.state.isColorPickerOpen}
+                          onClose={this.toggleColorPicker}
+                          activator={<TextField label={this.props.label} onChange={this.handleTextChange} value={this.state.textValue} connectedRight={
+                                  <Button onClick={this.toggleColorPicker}>
+                                    <div className="color-preview" style={{backgroundColor: this.props.color, width: '20px', height: '20px'}} > 
+                                    </div>
+                                  </Button>} />}
+                        >
+                          <ColorPicker onChange={(color) => this.props.onChange(hsbToHex(color))} color={this.formatHexToHsb(this.props.color)} />
+                        </Popover>
+                      </div>
+                    </FormLayout.Group>
                 </FormLayout>
               </Card>
             </Layout.Section>
