@@ -10685,5 +10685,12 @@ body{
     align-items: center;
     display: flex;
 }
+.fsb_font_btn {
+    margin-right: 10px;
+}
+.Polaris-Button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
 
 /*# sourceMappingURL=styles.chunk.css.map*/

@@ -142,8 +142,6 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
     });
 
     this.state = {
-      isColorPickerOpen: false,
-      textValue: "",
       bars: [{
         id: 1,
         name: 'My first shipping bar 1',
@@ -201,11 +199,8 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
         label: 'United states - USD',
         value: '$'
       }, {
-        label: 'United states - USD',
-        value: '$'
-      }, {
-        label: 'United states - USD',
-        value: '$'
+        label: 'Netherland',
+        value: 'nzd'
       }],
       name: 'My first free shipping bar',
       goal: '100',
@@ -215,82 +210,73 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
       goal_msg: "Congratulations! You've got free shipping",
       progress_msg_start: 'Only',
       progress_msg_end: ' away from free shipping',
-      link_opt: 0,
+      link_opt: 'off',
       link_url: 'https://apps.shopify.com/partners/me',
       is_link_new: 0,
-      is_close_btn: 0,
+      is_close_btn: 'no',
       position: 'top_push_sticky_v1',
-      currency: '$',
-      cur_symbol: '$',
-      is_auto_cur: 0,
-      bg_color: '#312e59'
+      currency: 'nzd',
+      cur_symbol: 'nzd',
+      is_auto_cur: 'on',
+      bg_color: '#312e59',
+      text_color: '#22222',
+      special_color: '#888888',
+      bg_color_opacity: 0.5,
+      isColorPickerOpen: false,
+      font_size: 14,
+      padding: 0,
+      disp_after: -1,
+      delay_before: 0,
+      time_fade: 0,
+      display_options: [{
+        label: 'All pages',
+        value: 'all'
+      }, {
+        label: 'Homepage only',
+        value: 'home'
+      }, {
+        label: "Only on Page with URL (Copy and Paste the URL below)",
+        value: 'url'
+      }, {
+        label: 'All pages',
+        value: 'keyword'
+      }],
+      display_page: 'home',
+      exclude_options: [{
+        label: 'Do NOT exclude any page',
+        value: 'no'
+      }, {
+        label: 'Homepage',
+        value: 'home'
+      }, {
+        label: "Only exclude Page with URL (Copy and Paste the URL below)",
+        value: 'url'
+      }, {
+        label: 'Only exclude Pages that contain the keyword in their URLs',
+        value: 'keyword'
+      }],
+      exclude_page: 'no',
+      dev_target_options: [{
+        label: 'Display on both desktop and mobile browsers. On mobile browsers font size will be capped to achieve optimum display',
+        value: 'desktop'
+      }, {
+        label: 'Display only on desktop browsers',
+        value: 'desktp'
+      }, {
+        label: 'HomepageDisplay only on mobile browsers',
+        value: 'mobile'
+      }],
+      dev_target: 'all',
+      schedule_options: [{
+        label: 'Always Display',
+        value: 'yes'
+      }, {
+        label: 'Only display within the giving period of time',
+        value: 'no'
+      }],
+      schedule: 'yes',
+      custom_code: ''
     };
-    this.state.textValue = this.props.color;
-    this.toggleColorPicker = this.toggleColorPicker.bind(this);
-    this.handleTextChange = this.handleTextChange.bind(this);
-  }
-
-  hexToRgb(hex) {
-    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-
-    if (hex) {
-      hex = hex.replace(shorthandRegex, function (m, r, g, b) {
-        return r + r + g + g + b + b;
-      });
-    }
-
-    const returnResult = {
-      red: 0,
-      green: 0,
-      blue: 0
-    };
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-
-    if (result) {
-      returnResult = {
-        red: parseInt(result[1], 16),
-        green: parseInt(result[2], 16),
-        blue: parseInt(result[3], 16)
-      };
-    }
-
-    return returnResult; // return result ? {
-    //     red: parseInt(result[1], 16),
-    //     green: parseInt(result[2], 16),
-    //     blue: parseInt(result[3], 16)
-    // } : null;
-  }
-
-  toggleColorPicker() {
-    this.setState({
-      isColorPickerOpen: !this.state.isColorPickerOpen
-    });
-  }
-
-  formatHexToHsb(hex) {
-    return Object(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["rgbToHsb"])(this.hexToRgb(hex));
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.color !== this.props.color) {
-      this.setState({
-        textValue: nextProps.color
-      });
-    }
-  }
-
-  handleTextChange(value) {
-    this.setState({
-      textValue: value
-    });
-
-    try {
-      let color = this.hexToRgb(value);
-
-      if (color) {
-        this.props.onChange(value);
-      }
-    } catch (err) {}
   }
 
   render() {
@@ -313,7 +299,24 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
       currency,
       cur_symbol,
       is_auto_cur,
-      bg_color
+      bg_color,
+      text_color,
+      special_color,
+      bg_color_opacity,
+      font_size,
+      padding,
+      disp_after,
+      delay_before,
+      time_fade,
+      display_page,
+      exclude_page,
+      dev_target,
+      display_options,
+      exclude_options,
+      dev_target_options,
+      schedule_options,
+      schedule,
+      custom_code
     } = this.state;
     return __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Page"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"].Section, {
       oneHalf: true
@@ -490,10 +493,10 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
       label: "Add Link to the Bar (optional):",
       options: [{
         label: 'ON',
-        value: 1
+        value: 'on'
       }, {
         label: 'OFF',
-        value: 0
+        value: 'off'
       }],
       onChange: this.handleChange('link_opt'),
       value: link_opt,
@@ -512,10 +515,10 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
       label: "Include Close Button:",
       options: [{
         label: 'YES',
-        value: 1
+        value: 'yes'
       }, {
         label: 'NO',
-        value: 0
+        value: 'no'
       }],
       onChange: this.handleChange('is_close_btn'),
       value: is_close_btn,
@@ -543,10 +546,10 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
       label: "Auto Currency Conversion::",
       options: [{
         label: 'OFF',
-        value: 0
+        value: 'on'
       }, {
         label: 'ON',
-        value: 1
+        value: 'off'
       }],
       onChange: this.handleChange('is_auto_cur'),
       value: is_auto_cur,
@@ -554,30 +557,164 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
     }))))), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"].Section, null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Card"], {
       title: "Style Configuration",
       sectioned: true
-    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"].Group, null, __jsx("div", null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Popover"], {
-      active: this.state.isColorPickerOpen,
-      onClose: this.toggleColorPicker,
-      activator: __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["TextField"], {
-        label: this.props.label,
-        onChange: this.handleTextChange,
-        value: this.state.textValue,
-        connectedRight: __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
-          onClick: this.toggleColorPicker
-        }, __jsx("div", {
-          className: "color-preview",
-          style: {
-            backgroundColor: this.props.color,
-            width: '20px',
-            height: '20px'
-          }
-        }))
-      })
-    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["ColorPicker"], {
-      onChange: color => this.props.onChange(Object(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["hsbToHex"])(color)),
-      color: this.formatHexToHsb(this.props.color)
-    })))))))), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Stack"], {
+    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"].Group, null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["ColorPicker"], {
+      label: "Background Color: ",
+      onChange: this.handleChange('bg_color'),
+      color: bg_color
+    }), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["ColorPicker"], {
+      onChange: this.handleChange('text_color'),
+      color: text_color
+    }), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["ColorPicker"], {
+      onChange: this.handleChange('special_color'),
+      color: special_color
+    })), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["RangeSlider"], {
+      label: "Background Color Opacity:",
+      value: bg_color_opacity,
+      min: 0,
+      max: 1,
+      step: 0.1,
+      onChange: this.handleChange('bg_color_opacity'),
+      output: true
+    }), "Background Images:", __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"].Group, null, __jsx("a", {
+      href: "",
+      onClick: "select_background_pic('img/bar_background/20170206_sales_01.png')"
+    }, __jsx("div", {
+      style: {
+        margin: "10px 0",
+        padding: "10px",
+        textAlign: "center",
+        fontSize: "16px",
+        color: "#FFFFFF",
+        fontFamily: 'Roboto',
+        background: "url('https://s3.amazonaws.com/lastsecondcoupon/img/bar_background/20170206_sales_01.png')"
+      }
+    }, "Sales")), __jsx("a", {
+      href: "",
+      onClick: "select_background_pic('img/bar_background/20170206_sales_01.png')"
+    }, __jsx("div", {
+      style: {
+        margin: "10px 0",
+        padding: "10px",
+        textAlign: "center",
+        fontSize: "16px",
+        color: "#FFFFFF",
+        fontFamily: 'Roboto',
+        background: "url('https://s3.amazonaws.com/lastsecondcoupon/img/bar_background/20170206_sales_01.png')"
+      }
+    }, "Sales")), __jsx("a", {
+      href: "",
+      onClick: "select_background_pic('img/bar_background/20170206_sales_01.png')"
+    }, __jsx("div", {
+      style: {
+        margin: "10px 0",
+        padding: "10px",
+        textAlign: "center",
+        fontSize: "16px",
+        color: "#FFFFFF",
+        fontFamily: 'Roboto',
+        background: "url('https://s3.amazonaws.com/lastsecondcoupon/img/bar_background/20170206_sales_01.png')"
+      }
+    }, "Sales"))), "Upload Background Image:", __jsx("input", {
+      type: "file",
+      style: {
+        marginBottom: "10px"
+      }
+    })), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn",
+      primary: true
+    }, "Helvetica"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      calssName: "fsb_font_btn"
+    }, "Lato"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["TextField"], {
+      value: font_size,
+      onChange: this.handleChange('font_size'),
+      label: "Font Size:",
+      type: "number",
+      helperText: "Bar height is determined by Font Size and Bar Padding",
+      prefix: "PX"
+    }), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["TextField"], {
+      value: padding,
+      onChange: this.handleChange('padding'),
+      label: "Bar Padding:",
+      type: "number",
+      helperText: "Space between the text and the upper/lower borders",
+      prefix: "PX"
+    }), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["TextField"], {
+      value: disp_after,
+      onChange: this.handleChange('disp_after'),
+      label: "Disappear After:",
+      type: "number",
+      helperText: "Bar will not disappear if set to 0.",
+      prefix: "Seconds"
+    }), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["TextField"], {
+      value: delay_before,
+      onChange: this.handleChange('delay_before'),
+      label: "Delay Before Repeating:",
+      type: "number",
+      helperText: "Wait this many seconds to show Free Shipping Bar again (unless cart value changes)",
+      prefix: "Seconds"
+    }), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["TextField"], {
+      value: time_fade,
+      onChange: this.handleChange('time_fade'),
+      label: "Time to Fade In/Out:",
+      type: "number",
+      helperText: "Bar will not fade if set to 0",
+      prefix: "Seconds"
+    }))))), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"].Section, null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Card"], {
+      title: "Targeting Configuration",
+      sectioned: true
+    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["FormLayout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["ChoiceList"], {
+      title: "Display on Page:",
+      choices: display_options,
+      selected: display_page,
+      onChange: this.handleChange('display_page')
+    }), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["ChoiceList"], {
+      title: "Exclude Page:",
+      choices: exclude_options,
+      selected: exclude_page,
+      onChange: this.handleChange('exclude_page')
+    }), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["ChoiceList"], {
+      title: "Device Target:",
+      choices: dev_target_options,
+      selected: dev_target,
+      onChange: this.handleChange('dev_target')
+    }), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["ChoiceList"], {
+      title: "Display Schedule:",
+      choices: schedule_options,
+      selected: schedule,
+      onChange: this.handleChange('schedule')
+    }))))), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"], null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Layout"].Section, null, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Card"], {
+      title: "Custom Code Configuration",
+      sectioned: true
+    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["TextField"], {
+      label: "Custom Code:",
+      value: custom_code,
+      onChange: this.handleChange('custom_code'),
+      multiline: true
+    }), __jsx("p", null, "Horizontal Zoom: Good for displaying a pattern based background image"), __jsx("p", null, "Vertical Scroll: A Background image scrolled vertically. Good for showing a product image.")))), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Stack"], {
       distribution: "trailing"
-    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+    }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], null, "Cancel"), __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_1__["Button"], {
       primary: true,
       submit: true
     }, "Save"))));
@@ -605,12 +742,6 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
   }
 
 }
-
-_defineProperty(FreeShippingBar, "propTypes", {
-  color: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.string,
-  label: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.string,
-  onChange: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.func
-});
 
 /* harmony default export */ __webpack_exports__["default"] = (FreeShippingBar);
 

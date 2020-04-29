@@ -1,3 +1,6 @@
+
+import React from 'react';
+import ReactDOM from 'react-dom';
 import App from 'next/app';
 import Head from 'next/head';
 import { AppProvider } from '@shopify/polaris';
