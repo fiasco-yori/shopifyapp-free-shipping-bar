@@ -19,10 +19,16 @@ import {
   Popover,
   RangeSlider
 } from '@shopify/polaris';
+
+//import dynamic from 'next/dynamic'
+
+// const RcolorPicker = dynamic(
+//   () => import('react-input-colorpicker'),
+//   { ssr: false }
+// )
+//import RcolorPicker from 'react-input-colorpicker';
+
 import {hsbToHex, rgbToHsb} from '@shopify/polaris';
-import PropTypes from 'prop-types';
-
-
 import fsbStyles from './styles/free-shipping-bar.module.css';
 import { LoneAnonymousOperationRule } from 'graphql';
 
@@ -109,7 +115,6 @@ class FreeShippingBar extends React.Component {
         custom_code:''
     };
   }
-
   render() {
     const { name, goal,goal_two, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, goal_msg, link_opt, link_url,is_link_new, is_close_btn, position, position_options, currencies, currency,cur_symbol,is_auto_cur, bg_color, text_color, special_color, bg_color_opacity, font_size, padding, disp_after, delay_before, time_fade,display_page,exclude_page,dev_target, display_options,exclude_options, dev_target_options, schedule_options, schedule,custom_code } = this.state;
 
