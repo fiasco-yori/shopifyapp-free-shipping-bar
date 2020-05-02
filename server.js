@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const next = require('next');
 const Koa = require('koa');
 const Router = require('koa-router');
-
+const axios = require('axios');
 var serve = require("koa-static");
 const { default: createShopifyAuth } = require('@shopify/koa-shopify-auth');
 const { verifyRequest } = require('@shopify/koa-shopify-auth');
@@ -25,8 +25,12 @@ const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, HOST, } = process.env;
 app.prepare().then(() => {
     const server = new Koa();
     const router = new Router();
+    const bodyParser = require('koa-body');
+    const shop_router = require('./server/routes/shop');
+    const template_router = require('./server/routes/fsb_template');
+
     server.use(session({ secure: true, sameSite: 'none' }, server));
-    server.keys = [next.js color picker];
+    server.keys = [SHOPIFY_API_SECRET_KEY];
 
     server.use(serve('./'));
     
@@ -60,6 +64,7 @@ app.prepare().then(() => {
           } else {
             console.log('Failed to register webhook', registration.result);
           }
+
           const shopify = new ShopifyAPIClient({
             shopName: shop,
             accessToken: accessToken,
@@ -79,8 +84,17 @@ app.prepare().then(() => {
                 );
               },
             );
+          axios.post(`${HOST}/fsb/api/shop`, {
+              name: shop,
+              accessToken: accessToken
+            },{
+              headers: {'Content-Type': 'application/json'}
+            })
+            .then((response) => {
+              console.log('shop create');
+          }) 
+          ctx.redirect("/");
 
-            ctx.redirect("/");
           },
       }),
     );
@@ -89,14 +103,27 @@ app.prepare().then(() => {
     require("./server/routes/webhookRoutes")(router, webhook);
 
     server.use(graphQLProxy({version: ApiVersion.April20}))
-    router.get('*', verifyRequest(), async (ctx) => {
-      await handle(ctx.req, ctx.res);
-      ctx.respond = false;
-      ctx.res.statusCode = 200;
-    });
+    // router.get('*', verifyRequest(), async (ctx) => {
+    //   await handle(ctx.req, ctx.res);
+    //   ctx.respond = false;
+    //   ctx.res.statusCode = 200;
+    // });
     server.use(router.allowedMethods());
     server.use(router.routes());
+    server.use(bodyParser())
+    server.use(shop_router.routes())
+    server.use(template_router.routes())
+
+ 
+    axios.get(`${HOST}/fsb/api/fsb_templates`, {
+      headers: {'Content-Type': 'application/json'}
+    })
+    .then((response) => {
+      console.log(response.data);
+    })  
+
     server.listen(port, () => {
         console.log(`> Ready on http://localhost:${port}`);
     });
+
   });

@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonGroup,
   Card,
   Form,
   FormLayout,
@@ -19,24 +20,24 @@ import {
   Popover,
   RangeSlider
 } from '@shopify/polaris';
+import {  
+  hsbToRgb,
+  rgbToHsb,
+  rgbString
+} from '@shopify/polaris';
 
-//import dynamic from 'next/dynamic'
 
-// const RcolorPicker = dynamic(
-//   () => import('react-input-colorpicker'),
-//   { ssr: false }
-// )
-//import RcolorPicker from 'react-input-colorpicker';
+//import { autobind } from "@shopify/javascript-utilities/decorators";
 
-import {hsbToHex, rgbToHsb} from '@shopify/polaris';
 import fsbStyles from './styles/free-shipping-bar.module.css';
 import { LoneAnonymousOperationRule } from 'graphql';
-
+import { countries as countryOptions } from "./datas/countries";
 
 class FreeShippingBar extends React.Component {
   constructor(props){
       super(props);
       this.state = {
+        country_options: countryOptions,
         bars: [
             { id: 1, name: 'My first shipping bar 1',active:0 },
             { id: 2, name: 'My first shipping bar 2',active:1 },
@@ -77,11 +78,28 @@ class FreeShippingBar extends React.Component {
         currency: 'nzd',
         cur_symbol: 'nzd',
         is_auto_cur: 'on',
-        bg_color: '#312e59',
-        text_color: '#22222',
-        special_color: '#888888',
+        bg_color: ({
+          hue: 300,
+          brightness: 1,
+          saturation: 0.7
+        }),
+
+        bg_popoverActive: false,
+        text_popoverActive: false,
+        special_popoverActive: false,
+        
+        text_color: ({
+          hue: 300,
+          brightness: 1,
+          saturation: 0.7
+        }),
+        special_color: ({
+          hue: 300,
+          brightness: 1,
+          saturation: 0.7
+        }),
+
         bg_color_opacity: 0.5,
-        isColorPickerOpen: false,
         font_size: 14,
         padding: 0,
         disp_after: -1,
@@ -116,7 +134,11 @@ class FreeShippingBar extends React.Component {
     };
   }
   render() {
-    const { name, goal,goal_two, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, goal_msg, link_opt, link_url,is_link_new, is_close_btn, position, position_options, currencies, currency,cur_symbol,is_auto_cur, bg_color, text_color, special_color, bg_color_opacity, font_size, padding, disp_after, delay_before, time_fade,display_page,exclude_page,dev_target, display_options,exclude_options, dev_target_options, schedule_options, schedule,custom_code } = this.state;
+    const { name, goal,goal_two, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, goal_msg, link_opt, link_url,is_link_new, is_close_btn, position, position_options, currencies, currency,cur_symbol,is_auto_cur, bg_color,bg_popoverActive,text_popoverActive, special_popoverActive, text_color, special_color, bg_color_opacity, font_size, padding, disp_after, delay_before, time_fade,display_page,exclude_page,dev_target, display_options,exclude_options, dev_target_options, schedule_options, schedule,custom_code } = this.state;
+
+    const bg_rgbaColor = rgbString(hsbToRgb(bg_color));
+    const text_rgbaColor = rgbString(hsbToRgb(text_color));
+    const special_rgbaColor = rgbString(hsbToRgb(special_color));
 
     return (
         <Page>
@@ -227,7 +249,6 @@ class FreeShippingBar extends React.Component {
                           </FormLayout>
                       </Card>
               </Layout.Section>
-
           </Layout>
           <Layout>
               <Layout.Section>
@@ -400,10 +421,102 @@ class FreeShippingBar extends React.Component {
             <Layout.Section>
               <Card title="Style Configuration" sectioned>
                 <FormLayout>
+                <FormLayout.Group>
+                    <Popover
+                        active={bg_popoverActive}
+                        activator={ 
+                            <Button onClick={this.handlePopoverOpen_bg}>
+                              <Stack alignment="center" spacing="tight">
+                                <div
+                                  style={{
+                                    height: "2rem",
+                                    width: "2rem",
+                                    borderRadius: "0.3rem",
+                                    background: bg_rgbaColor
+                                  }}
+                                />
+                                <span>Background Color</span>
+                              </Stack>
+                            </Button>
+                        }
+                        onClose={this.handlePopoverClose_bg}
+                      >
+                        <Popover.Section>
+                          <ColorPicker
+                            onChange={this.handleColorChange_bg}
+                            color={bg_color}
+                            allowAlpha={false}
+                          />
+                        </Popover.Section>
+                        <Popover.Section>
+                          <TextField value={bg_rgbaColor} onChange={this.handleRgbChange_bg} />
+                        </Popover.Section>
+                    </Popover>
+                    <Popover
+                        active={text_popoverActive}
+                        activator={ 
+                            <Button onClick={this.handlePopoverOpen_text}>
+                              <Stack alignment="center" spacing="tight">
+                                <div
+                                  style={{
+                                    height: "2rem",
+                                    width: "2rem",
+                                    borderRadius: "0.3rem",
+                                    background: text_rgbaColor
+                                  }}
+                                />
+                                <span>Text Color</span>
+                              </Stack>
+                            </Button>
+                        }
+                        onClose={this.handlePopoverClose_text}
+                      >
+                        <Popover.Section>
+                          <ColorPicker
+                            onChange={this.handleColorChange_text}
+                            color={text_color}
+                            allowAlpha={false}
+                          />
+                        </Popover.Section>
+                        <Popover.Section>
+                          <TextField value={text_rgbaColor} onChange={this.handleRgbChange_text} />
+                        </Popover.Section>
+                    </Popover>
+                    <Popover
+                        active={special_popoverActive}
+                        activator={ 
+                            <Button onClick={this.handlePopoverOpen_special}>
+                              <Stack alignment="center" spacing="tight">
+                                <div
+                                  style={{
+                                    height: "2rem",
+                                    width: "2rem",
+                                    borderRadius: "0.3rem",
+                                    background: special_rgbaColor
+                                  }}
+                                />
+                                <span>Special Color</span>
+                              </Stack>
+                            </Button>
+                        }
+                        onClose={this.handlePopoverClose_special}
+                      >
+                        <Popover.Section>
+                          <ColorPicker
+                            onChange={this.handleColorChange_special}
+                            color={special_color}
+                            allowAlpha={false}
+                          />
+                        </Popover.Section>
+                        <Popover.Section>
+                          <TextField value={special_rgbaColor} onChange={this.handleRgbChange_special} />
+                        </Popover.Section>
+                    </Popover>
+                </FormLayout.Group>
                     <FormLayout.Group>
-                      <ColorPicker label="Background Color: " onChange={this.handleChange('bg_color')} color={bg_color} />
+                      {/* <ColorPicker label="Background Color: " onChange={this.handleChange('bg_color')} color={bg_color} />
                       <ColorPicker onChange={this.handleChange('text_color')} color={text_color} />
-                      <ColorPicker onChange={this.handleChange('special_color')} color={special_color} />
+                      <ColorPicker onChange={this.handleChange('special_color')} color={special_color} /> */}
                     </FormLayout.Group>
                     <RangeSlider
                       label="Background Color Opacity:"
@@ -430,19 +543,21 @@ class FreeShippingBar extends React.Component {
                     <input type="file" style={{marginBottom: "10px"}}></input>
                       
                 </FormLayout>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button calssName="fsb_font_btn" primary>Helvetica</Button>
-                  <Button calssName="fsb_font_btn">Lato</Button>
-                  <Button  calssName="fsb_font_btn">Lato</Button>
+                  <ButtonGroup>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button calssName="fsb_font_btn" primary>Helvetica</Button>
+                    <Button calssName="fsb_font_btn">Lato</Button>
+                    <Button  calssName="fsb_font_btn">Lato</Button>
+                  </ButtonGroup>    
                 <FormLayout>
                   <TextField
                       value={font_size}
@@ -548,13 +663,17 @@ class FreeShippingBar extends React.Component {
   }
   renderDashboardTableData() {
     return this.state.bars.map((bar, index) => {
-      const { id, name } = bar
+      const { id, name, active } = bar
       return (
           <tr className="Polaris-DataTable__TableRow" key={id}>
             <td className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop">
               <Stack>
-                <Badge status="success">Active</Badge>
-                {name}
+                <Stack.Item>
+                  <Badge status="success">Active</Badge>
+                </Stack.Item>
+                <Stack.Item>
+                  {name}
+                </Stack.Item>
               </Stack>
             </td>
             <td className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop">
@@ -567,7 +686,7 @@ class FreeShippingBar extends React.Component {
           </tr>
       )
     })
-}
+  }
   handleSubmit = () => {
     this.setState({
       name: this.state.name,
@@ -578,5 +697,77 @@ class FreeShippingBar extends React.Component {
   handleChange = (field) => {
     return (value) => this.setState({[field]: value});
   };
+
+  //color picker functions
+  //----bg_color----------
+  handleColorChange_bg = (bg_color) => {
+    this.setState({ bg_color });
+  }
+
+  handleRgbChange_bg = (value) => {
+    const rgbValues = value.replace(/[^\d*.?\d*,]/g, "").split(",");
+    const bg_color = rgbToHsb({
+      red: rgbValues[0],
+      green: rgbValues[1],
+      blue: rgbValues[2]
+    });
+    this.setState({ bg_color });
+  }
+
+  handlePopoverClose_bg = () => {
+    this.setState({ bg_popoverActive: false });
+  }
+
+  handlePopoverOpen_bg = () => {
+    this.setState({ bg_popoverActive: true });
+  }
+  //   //----text_color----------
+  handleColorChange_text = (text_color) => {
+    this.setState({ text_color });
+  }
+
+  handleRgbChange_text = (value) => {
+    const rgbValues = value.replace(/[^\d*.?\d*,]/g, "").split(",");
+    const text_color = rgbToHsb({
+      red: rgbValues[0],
+      green: rgbValues[1],
+      blue: rgbValues[2]
+    });
+    this.setState({ text_color });
+  }
+
+  handlePopoverClose_text = () => {
+    this.setState({ text_popoverActive: false });
+  }
+
+  handlePopoverOpen_text = () => {
+    this.setState({ text_popoverActive: true });
+  }
+  //------special color------
+  handleColorChange_special = (special_color) => {
+    this.setState({ special_color });
+  }
+
+  handleRgbChange_special = (value) => {
+    const rgbValues = value.replace(/[^\d*.?\d*,]/g, "").split(",");
+    const special_color = rgbToHsb({
+      red: rgbValues[0],
+      green: rgbValues[1],
+      blue: rgbValues[2]
+    });
+    this.setState({ special_color });
+  }
+
+  handlePopoverClose_special = () => {
+    this.setState({ special_popoverActive: false });
+  }
+
+  handlePopoverOpen_special = () => {
+    this.setState({ special_popoverActive: true });
+  }
+  
+
+
+
 }
 export default FreeShippingBar;
