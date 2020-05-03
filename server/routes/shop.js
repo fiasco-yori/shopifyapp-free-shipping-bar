@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const router = new Router()
 const Shop = require('../models/shop')
 
-router.get('/fsb/api/shops', async ctx => {
+router.post('/fsb/api/shops', async ctx => {
     await Shop.findAll()
             .then (shops => {
                 ctx.body = shops
@@ -12,7 +12,7 @@ router.get('/fsb/api/shops', async ctx => {
             })
 })
 
-router.get('/fsb/api/shop/:id', async ctx => {
+router.post('/fsb/api/shop/:id', async ctx => {
     await Shop.findOne({
         where: {
             id: ctx.params.id

@@ -22,6 +22,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, HOST, } = process.env;
+
 app.prepare().then(() => {
     const server = new Koa();
     const router = new Router();
@@ -49,7 +50,9 @@ app.prepare().then(() => {
           ctx.cookies.set('shopOrigin', shop, {
             httpOnly: false,
             secure: true,
-            sameSite: 'none'
+            sameSite: 'none',
+            shop: shop,
+            accessToken: accessToken
           });
 
           const registration = await registerWebhook({
@@ -93,6 +96,8 @@ app.prepare().then(() => {
             .then((response) => {
               console.log('shop create');
           }) 
+
+
           ctx.redirect("/");
 
           },
@@ -103,24 +108,18 @@ app.prepare().then(() => {
     require("./server/routes/webhookRoutes")(router, webhook);
 
     server.use(graphQLProxy({version: ApiVersion.April20}))
-    // router.get('*', verifyRequest(), async (ctx) => {
-    //   await handle(ctx.req, ctx.res);
-    //   ctx.respond = false;
-    //   ctx.res.statusCode = 200;
-    // });
+
+    router.get('*', verifyRequest(), async (ctx) => {
+      await handle(ctx.req, ctx.res);
+      ctx.respond = false;
+      ctx.res.statusCode = 200;
+    });
     server.use(router.allowedMethods());
+
     server.use(router.routes());
     server.use(bodyParser())
     server.use(shop_router.routes())
     server.use(template_router.routes())
-
- 
-    axios.get(`${HOST}/fsb/api/fsb_templates`, {
-      headers: {'Content-Type': 'application/json'}
-    })
-    .then((response) => {
-      console.log(response.data);
-    })  
 
     server.listen(port, () => {
         console.log(`> Ready on http://localhost:${port}`);

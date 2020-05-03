@@ -27,16 +27,18 @@ import {
 } from '@shopify/polaris';
 
 
-//import { autobind } from "@shopify/javascript-utilities/decorators";
+
 
 import fsbStyles from './styles/free-shipping-bar.module.css';
 import { LoneAnonymousOperationRule } from 'graphql';
 import { countries as countryOptions } from "./datas/countries";
+import { getList } from "./server/templateFunctions";
 
 class FreeShippingBar extends React.Component {
   constructor(props){
       super(props);
       this.state = {
+        items: [],
         country_options: countryOptions,
         bars: [
             { id: 1, name: 'My first shipping bar 1',active:0 },
@@ -132,6 +134,10 @@ class FreeShippingBar extends React.Component {
         schedule: 'yes',
         custom_code:''
     };
+
+    getList().then(data => {
+      console.log(data)
+    })
   }
   render() {
     const { name, goal,goal_two, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, goal_msg, link_opt, link_url,is_link_new, is_close_btn, position, position_options, currencies, currency,cur_symbol,is_auto_cur, bg_color,bg_popoverActive,text_popoverActive, special_popoverActive, text_color, special_color, bg_color_opacity, font_size, padding, disp_after, delay_before, time_fade,display_page,exclude_page,dev_target, display_options,exclude_options, dev_target_options, schedule_options, schedule,custom_code } = this.state;

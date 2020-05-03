@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const router = new Router()
 const Fsb_template = require('../models/fsb_template')
 
-router.get('/fsb/api/fsb_templates', async ctx => {
+router.post('/fsb/api/fsb_templates', async ctx => {
     await Fsb_template.findAll()
             .then (Fsb_templates => {
                 console.log(Fsb_templates)
