@@ -1,8 +1,8 @@
-
 const axios = require('axios')
-export const getTemplateList = () => {
+export const getBackgroundList = () => {
     return axios
-                .post(`/fsb/api/fsb_templates`,{
+                .post('/fsb/api/fsb_backgrounds',{
+                },{
                     headers: {'Content-Type': 'application-json'}
                 })
                 .then(res => {

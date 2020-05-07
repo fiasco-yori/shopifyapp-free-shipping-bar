@@ -32,26 +32,25 @@ import {
 import fsbStyles from './styles/free-shipping-bar.module.css';
 import { LoneAnonymousOperationRule } from 'graphql';
 import { countries as countryOptions } from "./datas/countries";
-import { getList } from "./server/templateFunctions";
+
+import { getBarList, addBar,addToList } from "./server/barFunctions";
+import { getTemplateList } from "./server/templateFunctions";
+import { getBackgroundList } from "./server/backgroundFunctions";
+import { getFontList } from "./server/fontFunctions";
+
 
 class FreeShippingBar extends React.Component {
   constructor(props){
       super(props);
       this.state = {
-        items: [],
+        shop_id: 0,
+        bar_id: 0,
+        bg_color_js: 'eeeeee',
+        bars: [],
+        fonts: [],
+        templates: [],
+        backgrounds: [],
         country_options: countryOptions,
-        bars: [
-            { id: 1, name: 'My first shipping bar 1',active:0 },
-            { id: 2, name: 'My first shipping bar 2',active:1 },
-        ],
-        templates: [
-          { id: 1, name: 'My first shipping template 1', img: 'template1.png' },
-          { id: 2, name: 'My first shipping template 2', img: 'template1.png' },
-          { id: 3, name: 'My first shipping template 2', img: 'template1.png' },
-          { id: 4, name: 'My first shipping template 2', img: 'template1.png' },
-          { id: 5, name: 'My first shipping template 2', img: 'template1.png' },
-          { id: 6, name: 'My first shipping template 2', img: 'template1.png' },
-        ],
         position_options : [
             {label: 'Top bar pushes down the rest of the page', value: 'top_push_v1'},
             {label: 'Top bar pushes down the rest of the page (always visible while scrolling)', value: 'top_push_sticky_v1'},
@@ -103,6 +102,7 @@ class FreeShippingBar extends React.Component {
 
         bg_color_opacity: 0.5,
         font_size: 14,
+        font_family: 'Helvetica',
         padding: 0,
         disp_after: -1,
         delay_before: 0,
@@ -132,15 +132,79 @@ class FreeShippingBar extends React.Component {
           {label: 'Only display within the giving period of time', value: 'no'}
         ],
         schedule: 'yes',
-        custom_code:''
+        custom_code:'',
+        showForm: false,
     };
-
-    getList().then(data => {
-      console.log(data)
+    this.onChange = this.onChange.bind(this)
+    getBarList().then(datas => {
+        this.setState({bars: [...datas]}, () => 
+        {
+        }
+      )
+      
+    })
+    getTemplateList().then(datas => {
+      this.setState({templates: [...datas]}, 
+        () => {
+          console.log(this.state.templates)
+        }
+      )
+    })
+    getFontList().then(datas => {
+      this.setState({fonts: [...datas]}, 
+        () => {
+          console.log(this.state.fonts)
+        }
+      )
+    })
+    getBackgroundList().then(datas => {
+      this.setState({backgrounds: [...datas]}, 
+        () => {
+          console.log(this.state.backgrounds)
+        }
+      )
     })
   }
+  
+  init = () => {
+    this.setState({showForm: false})
+    this.setState({bar_id: 0})
+
+    getBarList().then(datas => {
+        this.setState({bars: [...datas]}, () => 
+        {
+        }
+      )
+      
+    })
+    getTemplateList().then(datas => {
+      this.setState({templates: [...datas]}, 
+        () => {
+        }
+      )
+    })
+    getFontList().then(datas => {
+      this.setState({fonts: [...datas]}, 
+        () => {
+          console.log(this.state.fonts)
+        }
+      )
+    })
+    getBackgroundList().then(datas => {
+      this.setState({backgrounds: [...datas]}, 
+        () => {
+          console.log(this.state.backgrounds)
+        }
+      )
+    })
+  }
+
+
+  onChange = event => {
+    this.setState({bg_color_js: event.target.value})
+  }
   render() {
-    const { name, goal,goal_two, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, goal_msg, link_opt, link_url,is_link_new, is_close_btn, position, position_options, currencies, currency,cur_symbol,is_auto_cur, bg_color,bg_popoverActive,text_popoverActive, special_popoverActive, text_color, special_color, bg_color_opacity, font_size, padding, disp_after, delay_before, time_fade,display_page,exclude_page,dev_target, display_options,exclude_options, dev_target_options, schedule_options, schedule,custom_code } = this.state;
+    const { name, goal,goal_two, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, goal_msg, link_opt, link_url,is_link_new, is_close_btn, position, position_options, currencies, currency,cur_symbol,is_auto_cur, bg_color,bg_popoverActive,text_popoverActive, special_popoverActive, text_color, special_color, bg_color_opacity, font_size, font_family, padding, disp_after, delay_before, time_fade,display_page,exclude_page,dev_target, display_options,exclude_options, dev_target_options, schedule_options, schedule,custom_code, bg_color_js, showForm} = this.state;
 
     const bg_rgbaColor = rgbString(hsbToRgb(bg_color));
     const text_rgbaColor = rgbString(hsbToRgb(text_color));
@@ -156,15 +220,18 @@ class FreeShippingBar extends React.Component {
                     <Heading>Free Shipping Bar (FSB) Dashboard</Heading>
                   </Stack.Item>
                   <Stack.Item>
-                    <Button primary>Create New Bar</Button>
+                    <Button primary onClick={this.onCreate}>Create New Bar</Button>
                   </Stack.Item>
                 </Stack>
+                {/* <input className="jscolor" value={bg_color_js} onChange={this.onChange.bind(this)}></input> */}
                 <div className="Polaris-DataTable">
                   <div className="Polaris-DataTable__ScrollContainer">
                     <table id='bars' className="Polaris-DataTable__Table"> 
                       <thead>
                         <tr>
                           <th className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop Polaris-DataTable__Cell--firstColumn Polaris-DataTable__Cell--header">Name</th>
+                          <th className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop Polaris-DataTable__Cell--firstColumn Polaris-DataTable__Cell--header">Geo Target</th>
+                          <th className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop Polaris-DataTable__Cell--firstColumn Polaris-DataTable__Cell--header">Excluded Countries</th>
                           <th className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop Polaris-DataTable__Cell--firstColumn Polaris-DataTable__Cell--header">Actions</th>
                         </tr>
                       </thead>
@@ -177,81 +244,58 @@ class FreeShippingBar extends React.Component {
               </Card>
             </Layout.Section>
           </Layout>
-        <Form onSubmit={this.handleSubmit}>
+        <div style={{display: showForm? "block" : "none" }}>
+        <Form onSubmit={this.handleSubmit} >
           <Layout>
               <Layout.Section oneThird>
                       <Card title="Basic Template" sectioned>
                           <FormLayout>
-                            <div className="fsb_tp_container">
-                              <div className="fsbStyles.fsb_tb_content" style={{ 
-                                backgroundColor: "rgb(30, 30, 32)",
-                                color: "rgb(242, 202, 128)",
-                                backgroundColor: "rgb(30, 30, 32)",
-                                color: "rgb(242, 202, 128)",
-                                textAlign: "center",
-                                fontSize: "16px",
-                                fontWeight: "normal",
-                                lineheight: "20px",
-                                padding: "12px",
-                                fontFamily: "Helvetica"
-                                }}  >
-                                      Bold and Clear
-                            </div>
-                            </div>
-                            <div className="fsb_tp_container">
-                              <div className="fsb_tb_content" style={{ 
-                                backgroundColor: "rgb(30, 30, 32)",
-                                color: "rgb(242, 202, 128)",
-                                backgroundColor: "rgb(30, 30, 32)",
-                                color: "rgb(242, 202, 128)",
-                                textAlign: "center",
-                                fontSize: "16px",
-                                fontWeight: "normal",
-                                lineheight: "20px",
-                                padding: "12px",
-                                fontFamily: "Helvetica"
-                                }}  >
-                                      Bold and Clear
+                          {this.state.templates.map((template, index) => {
+                            if(template.type == 0){
+                              return (
+                              <div key={index} className="fsb_tp_container">
+                                <div className="fsbStyles.fsb_tb_content" style={{ 
+                                  backgroundColor: template.bg_color,
+                                  color: template.text_color,
+                                  textAlign: "center",
+                                  fontSize: template.font_size,
+                                  fontWeight: "normal",
+                                  lineheight: "20px",
+                                  padding: "12px",
+                                  fontFamily: template.font_family
+                                  }}  >
+                                        {template.name}
+                                </div>
                               </div>
-                            </div>
+                              )
+                            }
+                          })}
                           </FormLayout>
                       </Card>
               </Layout.Section>
               <Layout.Section oneThird>
                       <Card title="Prenium Template" sectioned>
-                          <FormLayout>
-                            <div className="fsb_tp_container">
-                              <div className="fsbStyles.fsb_tb_content" style={{ 
-                                backgroundColor: "rgb(30, 30, 32)",
-                                color: "rgb(242, 202, 128)",
-                                backgroundColor: "rgb(30, 30, 32)",
-                                color: "rgb(242, 202, 128)",
-                                textAlign: "center",
-                                fontSize: "16px",
-                                fontWeight: "normal",
-                                lineheight: "20px",
-                                padding: "12px",
-                                fontFamily: "Helvetica"
-                                }}  >
-                                      Bold and Clear
-                            </div>
-                            </div>
-                            <div className="fsb_tp_container">
-                              <div className="fsb_tb_content" style={{ 
-                                backgroundColor: "rgb(30, 30, 32)",
-                                color: "rgb(242, 202, 128)",
-                                backgroundColor: "rgb(30, 30, 32)",
-                                color: "rgb(242, 202, 128)",
-                                textAlign: "center",
-                                fontSize: "16px",
-                                fontWeight: "normal",
-                                lineheight: "20px",
-                                padding: "12px",
-                                fontFamily: "Helvetica"
-                                }}  >
-                                      Bold and Clear
+                      <FormLayout>
+                          {this.state.templates.map((template, index) => {
+                            if(template.type == 1){
+                              return (
+                              <div key={index} className="fsb_tp_container">
+                                <div className="fsbStyles.fsb_tb_content" style={{ 
+                                  background: 'url('+template.img+')',
+                                  color: template.text_color,
+                                  textAlign: "center",
+                                  fontSize: template.font_size,
+                                  fontWeight: "normal",
+                                  lineheight: "20px",
+                                  padding: "12px",
+                                  fontFamily: template.font_family
+                                  }}  >
+                                        {template.name}
+                                </div>
                               </div>
-                            </div>
+                              )
+                            }
+                          })}
                           </FormLayout>
                       </Card>
               </Layout.Section>
@@ -519,11 +563,6 @@ class FreeShippingBar extends React.Component {
                         </Popover.Section>
                     </Popover>
                 </FormLayout.Group>
-                    <FormLayout.Group>
-                      {/* <ColorPicker label="Background Color: " onChange={this.handleChange('bg_color')} color={bg_color} />
-                      <ColorPicker onChange={this.handleChange('text_color')} color={text_color} />
-                      <ColorPicker onChange={this.handleChange('special_color')} color={special_color} /> */}
-                    </FormLayout.Group>
                     <RangeSlider
                       label="Background Color Opacity:"
                       value={bg_color_opacity}
@@ -535,34 +574,37 @@ class FreeShippingBar extends React.Component {
                     />
                     Background Images:
                     <FormLayout.Group>
-                        <a href="" onClick="select_background_pic('img/bar_background/20170206_sales_01.png')">
-                          <div style={{ margin: "10px 0", padding:"10px",textAlign: "center", fontSize:"16px", color:"#FFFFFF", fontFamily:'Roboto', background: "url('https://s3.amazonaws.com/lastsecondcoupon/img/bar_background/20170206_sales_01.png')"}}>Sales</div>
-                        </a>
-                        <a href="" onClick="select_background_pic('img/bar_background/20170206_sales_01.png')">
-                          <div style={{ margin: "10px 0", padding:"10px",textAlign: "center", fontSize:"16px", color:"#FFFFFF", fontFamily:'Roboto', background: "url('https://s3.amazonaws.com/lastsecondcoupon/img/bar_background/20170206_sales_01.png')"}}>Sales</div>
-                        </a>
-                        <a href="" onClick="select_background_pic('img/bar_background/20170206_sales_01.png')">
-                          <div style={{ margin: "10px 0", padding:"10px",textAlign: "center", fontSize:"16px", color:"#FFFFFF", fontFamily:'Roboto', background: "url('https://s3.amazonaws.com/lastsecondcoupon/img/bar_background/20170206_sales_01.png')"}}>Sales</div>
-                        </a>
+
+                    {this.state.backgrounds.map((background, index) => {
+                              return (
+                                <a href="" key={index} className="bg_img_container">
+                                <div style={{ 
+                                  margin: "10px 0", 
+                                  padding:"10px",
+                                  textAlign: "center",
+                                   fontSize:background.font_size, 
+                                   color:background.text_color, 
+                                   fontFamily:background.font_family, 
+                                   background: 'url('+background.img+')'
+                                   }}>
+                                  {background.name}</div>
+                              </a>
+                              )
+                      })}
                     </FormLayout.Group>
                     Upload Background Image:
                     <input type="file" style={{marginBottom: "10px"}}></input>
                       
                 </FormLayout>
                   <ButtonGroup>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button calssName="fsb_font_btn" primary>Helvetica</Button>
-                    <Button calssName="fsb_font_btn">Lato</Button>
-                    <Button  calssName="fsb_font_btn">Lato</Button>
+                  {this.state.fonts.map((font, index) => {
+                        return (
+                          <Button key={index} calssName="fsb_font_btn" 
+                          >
+                            {font.name}
+                            </Button>
+                        )
+                    })}
                   </ButtonGroup>    
                 <FormLayout>
                   <TextField
@@ -652,53 +694,103 @@ class FreeShippingBar extends React.Component {
                   />
                   <p>Horizontal Zoom: Good for displaying a pattern based background image</p>
                   <p>Vertical Scroll: A Background image scrolled vertically. Good for showing a product image.</p>
+
+                  <Stack distribution="trailing">
+                    <Button onClick={this.handleCancel}>
+                      Cancel
+                    </Button>
+                    <Button primary submit>
+                      Save
+                    </Button>
+                  </Stack>
                 </Card>
               </Layout.Section>
             </Layout>
-          <Stack distribution="trailing">
-              <Button>
-                Cancel
-              </Button>
-              <Button primary submit>
-                Save
-              </Button>
-          </Stack>
         </Form>
+        </div>              
       </Page>
     );
   }
   renderDashboardTableData() {
     return this.state.bars.map((bar, index) => {
-      const { id, name, active } = bar
+      const { id, name, countries, exclude_countries, is_active } = bar
       return (
-          <tr className="Polaris-DataTable__TableRow" key={id}>
+          <tr className="Polaris-DataTable__TableRow" key={bar.id}>
             <td className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop">
               <Stack>
                 <Stack.Item>
-                  <Badge status="success">Active</Badge>
+                  <Badge status={is_active == 1? "success": "attention"}>{is_active == 1? "Active": "Pending"}</Badge>
                 </Stack.Item>
                 <Stack.Item>
-                  {name}
+                  {bar.name}
                 </Stack.Item>
               </Stack>
+            </td>
+            <td className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop">
+                {countries || 'All Countries'}
+            </td>
+            <td className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop">
+                {exclude_countries || 'N/A'}              
             </td>
             <td className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop">
               <Stack>
                 <Button primary>Edit</Button>
                 <Button>Duplicate</Button>
-                <Button>Activate</Button>
+                <Button onCLick={this.onActivate(bar.id)}>Activate</Button>
               </Stack>
               </td>
           </tr>
       )
     })
   }
-  handleSubmit = () => {
-    this.setState({
-      name: this.state.name,
-      goal: this.state.goal
+  onActivate = (id) => {
+    swal("Successfully Activated", {
+      icon: "success",
     });
-    console.log('submission', this.state);
+  }
+  handleCancel = () => {
+    this.setState({showForm: false})
+  }
+  handleSubmit = () => {
+     let submit_data = {
+        shop_id: this.state.shop_id,
+        bar_id: this.state.bar_id,
+        name: this.state.name,
+        goal: this.state.goal,
+        goal_two: this.state.goal_two,
+        init_msg_start: this.state.init_msg_start,
+        init_msg_end: this.state.init_msg_start, 
+        progress_msg_start: this.state.progress_msg_start,
+        progress_msg_end: this.state.progress_msg_end,
+        goal_msg: this.state.goal_msg, 
+        link_opt: this.state.link_opt, 
+        link_url: this.state.link_url,
+        is_link_new: this.state.is_link_new,
+        is_close_btn: this.state.is_close_btn,
+        position: this.state.position, 
+        currency: this.state.currency,
+        cur_symbol: this.state.cur_symbol,
+        is_auto_cur: this.state.is_auto_cur,
+        bg_color: JSON.stringify(this.state.bg_color),
+        text_color: JSON.stringify(this.state.text_color),
+        special_color: JSON.stringify(this.state.special_color), 
+        bg_color_opacity: this.state.bg_color_opacity,
+        font_size: this.state.font_size,
+        font_family: this.state.font_family,
+        padding: this.state.padding,
+        disp_after: this.state.disp_after,
+        delay_before: this.state.delay_before,
+        time_fade: this.state.time_fade,
+        display_page: this.state.display_page,
+        exclude_page: this.state.exclude_page,
+        dev_target: this.state.dev_target,
+        schedule: this.state.schedule,
+        custom_code: this.state.custom_code,
+     }
+     addBar(submit_data).then(data => {
+       console.log(data);
+       this.init();
+     })
   };
   handleChange = (field) => {
     return (value) => this.setState({[field]: value});
@@ -771,7 +863,9 @@ class FreeShippingBar extends React.Component {
   handlePopoverOpen_special = () => {
     this.setState({ special_popoverActive: true });
   }
-  
+  onCreate = () => {
+    this.setState({showForm: true})
+  }
 
 
 

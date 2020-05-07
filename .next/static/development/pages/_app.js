@@ -80441,6 +80441,8 @@ var MyApp = /*#__PURE__*/function (_App) {
       };
       return __jsx(react__WEBPACK_IMPORTED_MODULE_5___default.a.Fragment, null, __jsx(next_head__WEBPACK_IMPORTED_MODULE_8___default.a, null, __jsx("title", null, "Free shipping bar"), __jsx("meta", {
         charSet: "utf-8"
+      }), __jsx("script", {
+        src: "./assets/js/jscolor.js"
       })), __jsx(_shopify_app_bridge_react__WEBPACK_IMPORTED_MODULE_10__["Provider"], {
         config: config
       }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_9__["AppProvider"], {

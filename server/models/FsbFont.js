@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 const db = require('../database/db')
 
 module.exports = db.sequelize.define(
-    'shops',
+    'fsb_fonts',
     {
         id: {
             type: Sequelize.INTEGER,
@@ -10,9 +10,6 @@ module.exports = db.sequelize.define(
             autoIncrement: true
         },
         name: {
-            type: Sequelize.STRING
-        },
-        accessToken: {
             type: Sequelize.STRING
         }
     }

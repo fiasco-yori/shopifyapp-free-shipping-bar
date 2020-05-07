@@ -353,6 +353,8 @@ class MyApp extends next_app__WEBPACK_IMPORTED_MODULE_2___default.a {
     };
     return __jsx(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, __jsx(next_head__WEBPACK_IMPORTED_MODULE_3___default.a, null, __jsx("title", null, "Free shipping bar"), __jsx("meta", {
       charSet: "utf-8"
+    }), __jsx("script", {
+      src: "./assets/js/jscolor.js"
     })), __jsx(_shopify_app_bridge_react__WEBPACK_IMPORTED_MODULE_5__["Provider"], {
       config: config
     }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_4__["AppProvider"], {

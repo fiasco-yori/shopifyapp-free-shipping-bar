@@ -17,3 +17,12 @@
 .fsb_font_btn {
     margin-right: 10px;
 }
+.jscolor {
+    padding: 10px;
+    font-size: 15px;
+    border: none;
+    outline: none;
+}
+.bg_img_container {
+    text-decoration-line: none
+}

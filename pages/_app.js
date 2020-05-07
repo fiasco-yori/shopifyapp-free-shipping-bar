@@ -27,6 +27,7 @@ class MyApp extends App {
         <Head>
           <title>Free shipping bar</title>
           <meta charSet="utf-8" />
+          <script src="./assets/js/jscolor.js"></script>
         </Head>
         <Provider config={config}>
             <AppProvider i18n={translations}>

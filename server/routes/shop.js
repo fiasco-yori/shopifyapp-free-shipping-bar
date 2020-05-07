@@ -36,13 +36,38 @@ router.post('/fsb/api/shop', async ctx => {
             error: 'Try again'
         }
     } else {
-        await Shop.create(ctx.request.body)
+        await Shop.findOne({
+            where: {
+                name: ctx.request.body.name
+            }
+        })
+        .then(shop => {
+            if(shop) {
+                Shop.update(
+                    {accessToken: ctx.request.body.accessToken},
+                    {where: {id: shop.id}}
+                )
+                .then (() => {
+                    console.log('updated shop')
+                    ctx.body = {status: 'Shop updated!'}
+                })
+                .catch(err => {
+                    ctx.body = 'error: ' + err
+                })
+            }else {
+                Shop.create(ctx.request.body)
                   .then(data => {
+                    console.log('created shop')
                       ctx.body = data
                   })
                   .catch(err => {
                       ctx.body = 'error: ' + err
                   })
+            }
+        })
+        .catch(err => {
+            ctx.body = 'error:' + err
+        })
     }
 })
 

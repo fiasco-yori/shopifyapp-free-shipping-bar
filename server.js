@@ -27,8 +27,12 @@ app.prepare().then(() => {
     const server = new Koa();
     const router = new Router();
     const bodyParser = require('koa-body');
+
     const shop_router = require('./server/routes/shop');
-    const template_router = require('./server/routes/fsb_template');
+    const fsb_bardata_router = require('./server/routes/fsb_bardata');
+    const fsb_template_router = require('./server/routes/fsb_template');
+    const fsb_font_router = require('./server/routes/fsb_font');
+    const fsb_background_router = require('./server/routes/fsb_background');
 
     server.use(session({ secure: true, sameSite: 'none' }, server));
     server.keys = [SHOPIFY_API_SECRET_KEY];
@@ -51,7 +55,6 @@ app.prepare().then(() => {
             httpOnly: false,
             secure: true,
             sameSite: 'none',
-            shop: shop,
             accessToken: accessToken
           });
 
@@ -96,8 +99,6 @@ app.prepare().then(() => {
             .then((response) => {
               console.log('shop create');
           }) 
-
-
           ctx.redirect("/");
 
           },
@@ -108,18 +109,25 @@ app.prepare().then(() => {
     require("./server/routes/webhookRoutes")(router, webhook);
 
     server.use(graphQLProxy({version: ApiVersion.April20}))
-
+        
     router.get('*', verifyRequest(), async (ctx) => {
       await handle(ctx.req, ctx.res);
       ctx.respond = false;
       ctx.res.statusCode = 200;
     });
-    server.use(router.allowedMethods());
 
-    server.use(router.routes());
+    
+
+    server.use(router.allowedMethods())
+    
     server.use(bodyParser())
+    server.use(router.routes())
+    
     server.use(shop_router.routes())
-    server.use(template_router.routes())
+    server.use(fsb_bardata_router.routes())
+    server.use(fsb_template_router.routes())
+    server.use(fsb_background_router.routes())
+    server.use(fsb_font_router.routes())
 
     server.listen(port, () => {
         console.log(`> Ready on http://localhost:${port}`);
