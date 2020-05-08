@@ -17,10 +17,27 @@ export const addBar = (bar) => {
                 return res.data
             })
 }
-
-export const activateBar = (id) => {
-    return axios.post(`/fsb/api/fsb_activate`, {id})
+export const duplicateBar = (id) => {
+    return axios.post(`/fsb/api/fsb_duplicatebar`, {id})
+                .then((res) => {
+                    return res.data
+                })
+}
+export const deleteBar = (id) => {
+    return axios.post(`/fsb/api/fsb_deletebar`, {id})
+                .then((res) => {
+                    return res.data
+                })
+}
+export const activateBar = (data) => {
+    return axios.post(`/fsb/api/fsb_activate`, {data})
            .then((res) => {
                return res.data
-           }
+           })
+}
+export const pauseBar = (data) => {
+    return axios.post(`/fsb/api/fsb_pause`, {data})
+           .then((res) => {
+               return res.data
+           })
 }
