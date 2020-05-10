@@ -2,6 +2,7 @@ require('isomorphic-fetch');
 const dotenv = require('dotenv');
 const next = require('next');
 const Koa = require('koa');
+const cors = require('@koa/cors');
 const Router = require('koa-router');
 const axios = require('axios');
 var serve = require("koa-static");
@@ -117,7 +118,7 @@ app.prepare().then(() => {
     });
 
     
-
+    server.use(cors())  
     server.use(router.allowedMethods())
     
     server.use(bodyParser())

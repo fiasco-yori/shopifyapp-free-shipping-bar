@@ -353,8 +353,106 @@ class MyApp extends next_app__WEBPACK_IMPORTED_MODULE_2___default.a {
     };
     return __jsx(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, __jsx(next_head__WEBPACK_IMPORTED_MODULE_3___default.a, null, __jsx("title", null, "Free shipping bar"), __jsx("meta", {
       charSet: "utf-8"
+    }), __jsx("meta", {
+      "http-equiv": "X-UA-Compatible",
+      content: "IE=edge"
+    }), __jsx("meta", {
+      name: "viewport",
+      content: "width=device-width, initial-scale=1"
     }), __jsx("script", {
       src: "./assets/js/jscolor.js"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Lato",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Roboto",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Josefin+Sans",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Lobster",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Open+Sans",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Poiret+One",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Dancing+Script",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Bangers",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Playfair+Display",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Chewy",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Quicksand",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Great+Vibes",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Righteous",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Crafty+Girls",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Mystery+Quest",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Montserrat",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Oswald",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Unica+One",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Muli",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Raleway",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Carter+One",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Varela+Round",
+      rel: "stylesheet",
+      type: "text/css"
+    }), __jsx("link", {
+      href: "https://fonts.googleapis.com/css?family=Julius+Sans+One",
+      rel: "stylesheet",
+      type: "text/css"
     })), __jsx(_shopify_app_bridge_react__WEBPACK_IMPORTED_MODULE_5__["Provider"], {
       config: config
     }, __jsx(_shopify_polaris__WEBPACK_IMPORTED_MODULE_4__["AppProvider"], {

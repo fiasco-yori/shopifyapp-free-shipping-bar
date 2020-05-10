@@ -3,14 +3,106 @@ const router = new Router()
 const Shop = require('../models/Shop')
 const Fsb_bars = require('../models/FsbBar')
 
+const ShopifyAPIClient = require("shopify-api-node");
+
+router.post('/fsb_get_bar/:shop', async ctx => {
+    
+    let shop_name = ctx.params.shop
+    let shop_id = 0, getShop;
+    var shop_currency = "USD";
+
+    getShop = await Shop.findOne({
+        where: {
+            name: shop_name
+        }
+    })
+    if(getShop.id) {
+        shop_id = getShop.id
+        const shopify = new ShopifyAPIClient({
+            shopName: shop_name,
+            accessToken: getShop.accessToken,
+        });
+        var shopdata = await shopify.shop.get()
+        shop_currency = shopdata.currency
+    }
+
+    await Fsb_bars.findOne({
+        where: {
+            shop_id: shop_id,
+            is_active: 1
+        }
+    })
+    .then (data => {
+        console.log(shop_currency)
+        
+        //console.log(exchange_rate)
+        let display_page = (data.display_page == 'all' || data.display_page == 'home') ? data.display_page : data.display_page == 'url' ? data.display_url : data.display_page == 'keyword' ? data.display_keyword: data.display_page;
+        
+        let exclude_page = (data.exclude_page == 'no' || data.exclude_page == 'home') ? data.exclude_page : data.exclude_page == 'url' ? data.exclude_url : data.exclude_page == 'keyword' ? data.exclude_keyword: data.exclude_page;
+
+        let bar = {
+            animation_time: data.time_fade,
+            auto_currency: data.is_auto_cur == 'on' ? true : false,
+            background_color: data.bg_color,
+            background_pic: data.img,
+            bar_height: 30,
+            bar_id: data.id,
+            bar_link: data.link_url,
+            bar_padding: data.padding,
+            close_option: data.is_close_btn == 'yes' ? true: false,
+            countries: data.countries,
+            currency_code: data.currency,
+            currency_exchange_rate: 1,
+            currency_symbol: data.cur_symbol,
+            custom_code: data.custom_code,
+            display_page: display_page,
+            end_on: data.sch_end,
+            entire_bar_clickable: false,
+            exclude_countries: "",
+            exclude_page: exclude_page,
+            font: data.font_family,
+            font_size: data.font_size,
+            goal: data.goal,
+            goal_2: data.gaol_sec,
+            interval_time: data.delay_before,
+            locales: [],
+            message_one: data.init_msg_start + " {{currency_symbol}}{{goal}}",
+            message_three: data.goal_msg,
+            message_two: data.progress_msg_start + " {{currency_symbol}}{{remainder}} " + data.progress_msg_end,
+            message_two_2: data.progress_msg_sec_start + " {{currency_symbol}}{{remainder_2}} " + data.progress_msg_sec_end,
+            new_tab: data.is_link_new == 1 ? true : false,
+            opacity: 1,
+            position: data.position,
+            schedule_enabled: data.schedule == 'yes' ? true : false,
+            show_time: data.disp_after,
+            start_on: data.sch_start,
+            target_device: data.dev_target,
+            text_color_one: data.text_color,
+            text_color_two: data.special_color,
+            translation: "",
+            visitor_currency_code: data.currency
+        }
+        let bars = []
+        bars.push(bar)
+        let send_data = {
+            bars: bars,
+            record: false,
+            shop_active: "yes"
+        }
+        ctx.body = send_data
+    })
+    .catch(err => {
+        ctx.body = []
+    })
+})
+
 router.post('/fsb/api/fsb_bardatas', async ctx => {
     const {shop, accessToken} = ctx.session
-    console.log('token:' + accessToken)
     let shop_id = 0, getShop;
     getShop = await Shop.findOne({
         where: {
             name: shop
-            //,accessToken: accessToken
+            ,accessToken: accessToken
         }
     })
     if(getShop.id) {
@@ -45,29 +137,36 @@ router.post('/fsb/api/fsb_addbar', async ctx => {
     let rbody = ctx.request.body.bar
     if(rbody.bar_id == 0){
         rbody.shop_id = shop_id
+        let exist_bar_count = await Fsb_bars.count({
+            where: {
+                shop_id: shop_id
+            }
+        })
+        if(exist_bar_count < 1) {
+            rbody.is_active = 1
+        }
         await Fsb_bars.create(rbody)
         .then(data => {
-            console.log('created bar')
-            ctx.body = data
+            ctx.body = {result:data, status:'success', err_msg: 'Bar Created Successfully!'}
         })
         .catch(err => {
-            console.log(err)
-            ctx.body = 'error: ' + err
+            ctx.body = {status: 'fail', err_msg: err}
         })
     }else if(rbody.bar_id > 0) {
+        let update_id = rbody.bar_id
+        delete rbody.bar_id
         await Fsb_bars.update(
-            {rbody},
-            {where: {id: rbody.bar_id}}
+            rbody,
+            {where: {id: update_id}}
         )
         .then (() => {
-            console.log('updated bar')
-            ctx.body = {status: 'bar updated!'}
+            ctx.body = {status: 'success', err_msg:'Bar Updated Successfully!'}
         })
         .catch(err => {
-            ctx.body = 'error: ' + err
+            ctx.body = {status: 'fail', err_msg: err}
         })
     }else {
-        ctx.body = 'error'
+        ctx.body = {status: 'fail'}
     }
 })
 
@@ -128,13 +227,17 @@ router.post('/fsb/api/fsb_duplicatebar', async ctx => {
     if(getBarbyid) {
         let insertData = {
             shop_id: getBarbyid.shop_id,
+            template_id: getBarbyid.template_id,
+            background_id: getBarbyid.background_id,
             name: getBarbyid.name,
             goal: getBarbyid.goal,
-            goal_two: getBarbyid.goal_two,
+            goal_sec: getBarbyid.goal_sec,
             init_msg_start: getBarbyid.init_msg_start,
             init_msg_end: getBarbyid.init_msg_start, 
             progress_msg_start: getBarbyid.progress_msg_start,
             progress_msg_end: getBarbyid.progress_msg_end,
+            progress_msg_sec_start: getBarbyid.progress_msg_sec_start,
+            progress_msg_sec_end: getBarbyid.progress_msg_sec_end,
             goal_msg: getBarbyid.goal_msg, 
             link_opt: getBarbyid.link_opt, 
             link_url: getBarbyid.link_url,
@@ -159,6 +262,13 @@ router.post('/fsb/api/fsb_duplicatebar', async ctx => {
             dev_target: getBarbyid.dev_target,
             schedule: getBarbyid.schedule,
             custom_code: getBarbyid.custom_code,
+            display_url: getBarbyid.display_url,
+            display_keyword: getBarbyid.display_keyword,
+            exclude_url: getBarbyid.exclude_url,
+            exclude_exclude_keyword: getBarbyid.exclude_keyword,
+            sch_start: getBarbyid.sch_start,
+            sch_end: getBarbyid.sch_end,
+            img: getBarbyid.img
         }
         await Fsb_bars.create(insertData)
         .then(() => {

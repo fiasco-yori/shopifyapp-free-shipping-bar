@@ -119,16 +119,16 @@ class FreeShippingBar extends React.Component {
         font_size: '16',
         font_family: 'Helvetica',
         padding: '12',
-        disp_after: '-1',
+        disp_after: '0',
         delay_before: '0',
-        time_fade: '0',
+        time_fade: '3.5',
         display_options : [
           {label: 'All pages', value: 'all'},
           {label: 'Homepage only', value: 'home'},
           {label: "Only on Page with URL (Copy and Paste the URL below)", value: 'url'},
           {label: 'All pages', value: 'keyword'},
         ],
-        display_page: 'home',
+        display_page: 'all',
         exclude_options: [
           {label: 'Do NOT exclude any page', value: 'no'},
           {label: 'Homepage', value: 'home'},
@@ -143,10 +143,10 @@ class FreeShippingBar extends React.Component {
         ],
         dev_target: 'all',
         schedule_options: [
-          {label: 'Always Display', value: 'yes'},
-          {label: 'Only display within the giving period of time', value: 'no'}
+          {label: 'Always Display', value: 'no'},
+          {label: 'Only display within the giving period of time', value: 'yes'}
         ],
-        schedule: 'yes',
+        schedule: 'no',
         custom_code:'',
         showForm: false,
         content_active: true,
@@ -154,6 +154,12 @@ class FreeShippingBar extends React.Component {
         targeting_active: true,
         custome_code_active: true,
         cur_active: true,
+        display_url: '',
+        display_keyword: '',
+        exclude_keyword: '',
+        exclude_url: '',
+        sch_end: '',
+        sch_start: ''
     };
     
 
@@ -317,7 +323,7 @@ class FreeShippingBar extends React.Component {
   render() {
 
 
-    const { name, img, goal,goal_sec, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, progress_msg_sec_start, progress_msg_sec_end, goal_msg, link_opt, link_url,is_link_new, is_close_btn, position, position_options, currencies, currency,cur_symbol,is_auto_cur, bg_color,bg_popoverActive,text_popoverActive, special_popoverActive, text_color, special_color, bg_color_opacity, font_size, font_family, padding, disp_after, delay_before, time_fade,display_page,exclude_page,dev_target, display_options,exclude_options, dev_target_options, schedule_options, schedule,custom_code, bg_color_js, showForm, content_active, style_active, custome_code_active, targeting_active, cur_active, template_id, is_sec_goal} = this.state;
+    const { name, img, goal,goal_sec, init_msg_start, init_msg_end, progress_msg_start, progress_msg_end, progress_msg_sec_start, progress_msg_sec_end, goal_msg, link_opt, link_url,is_link_new, is_close_btn, position, position_options, currencies, currency,cur_symbol,is_auto_cur, bg_color,bg_popoverActive,text_popoverActive, special_popoverActive, text_color, special_color, bg_color_opacity, font_size, font_family, padding, disp_after, delay_before, time_fade,display_page,exclude_page,dev_target, display_options,exclude_options, dev_target_options, schedule_options, schedule,custom_code, bg_color_js, showForm, content_active, style_active, custome_code_active, targeting_active, cur_active, template_id, is_sec_goal, display_url,display_keyword, exclude_url, exclude_keyword, sch_end, sch_start} = this.state;
 
     
     
@@ -373,7 +379,7 @@ class FreeShippingBar extends React.Component {
                               </td>
                               <td className="Polaris-DataTable__Cell Polaris-DataTable__Cell--verticalAlignTop">
                                 <ButtonGroup>
-                                  <Button size="slim" primary>Edit</Button>
+                                  <Button size="slim" onClick={this.onEdit.bind(this, bar)} primary>Edit</Button>
                                   <Button size="slim" onClick={this.onDuplicate.bind(this, bar.id)}>Duplicate</Button>
                                   {bar.is_active == 1 ? (
                                     <Button size="slim" onClick={this.onPause.bind(this, {id: bar.id})}>Pause</Button>
@@ -478,9 +484,11 @@ class FreeShippingBar extends React.Component {
                                       }}> {this.state.cur_symbol}</span>
                                       <span style={{
                                         color: rgbString(hsbToRgb(this.state.special_color))
-                                        }}>{this.state.goal}</span>
+                                        }}>{this.state.goal} </span>
+                                        {this.state.init_msg_end}
                                       { this.state.is_close_btn == 'yes' ? (
                                         <div><a id="fsb_close" style={{
+                                          color: rgbString(hsbToRgb(this.state.text_color)),
                                           position:"absolute",
                                           right:"8px",
                                             top:"50%",
@@ -491,7 +499,122 @@ class FreeShippingBar extends React.Component {
                                             </a>
                                         </div>
                                       ) : ('')}
-                                      
+                                </div>
+                            
+                              </div>
+                            </div>
+                            <div className="fsb_tp_container">
+                              <div style={{
+                                backgroundImage: 'url(' + this.state.img + ')'
+                              }}>
+                                <div id="fsb_main_bar" className="fsb_tb_content" style={{
+                                  position: "relative", 
+                                  opacity: this.state.bg_color_opacity,
+                                  backgroundColor: rgbString(hsbToRgb(this.state.bg_color)),
+                                  color: rgbString(hsbToRgb(this.state.text_color)),
+                                  textAlign: "center",
+                                  fontSize: this.state.font_size + 'px',
+                                  fontWeight: "normal",
+                                  lineheight: "20px",
+                                  padding: this.state.padding + 'px',
+                                  fontFamily: this.state.font_family
+                                  }} >
+                                      {this.state.progress_msg_start}
+                                      <span style={{
+                                        color: rgbString(hsbToRgb(this.state.special_color))
+                                      }}> {this.state.cur_symbol}</span>
+                                      <span style={{
+                                        color: rgbString(hsbToRgb(this.state.special_color))
+                                        }}>{this.state.goal-1} </span>
+                                       {this.state.progress_msg_end} 
+                                      { this.state.is_close_btn == 'yes' ? (
+                                        <div><a id="fsb_close" style={{
+                                          color: rgbString(hsbToRgb(this.state.text_color)),
+                                          position:"absolute",
+                                          right:"8px",
+                                            top:"50%",
+                                            transform:"translateY(-50%)", color:"#002B38", 
+                                            fontFamily: "Helvertical, Arial, sans-serif", fontWeight: "bold",
+                                            fontSize:"16px",
+                                            textDecoration: "none"}}>X
+                                            </a>
+                                        </div>
+                                      ) : ('')}
+                                </div>
+                            
+                              </div>
+                            </div>
+                            <div className="fsb_tp_container" style={{display: is_sec_goal == 1? 'block':'none'}}>
+                              <div style={{
+                                backgroundImage: 'url(' + this.state.img + ')'
+                              }}>
+                                <div id="fsb_main_bar" className="fsb_tb_content" style={{
+                                  position: "relative", 
+                                  opacity: this.state.bg_color_opacity,
+                                  backgroundColor: rgbString(hsbToRgb(this.state.bg_color)),
+                                  color: rgbString(hsbToRgb(this.state.text_color)),
+                                  textAlign: "center",
+                                  fontSize: this.state.font_size + 'px',
+                                  fontWeight: "normal",
+                                  lineheight: "20px",
+                                  padding: this.state.padding + 'px',
+                                  fontFamily: this.state.font_family
+                                  }} >
+                                      {this.state.progress_msg_sec_start}
+                                      <span style={{
+                                        color: rgbString(hsbToRgb(this.state.special_color))
+                                      }}> {this.state.cur_symbol}</span>
+                                      <span style={{
+                                        color: rgbString(hsbToRgb(this.state.special_color))
+                                        }}>{this.state.goal_sec-1} </span>
+                                       {this.state.progress_msg_sec_end} 
+                                      { this.state.is_close_btn == 'yes' ? (
+                                        <div><a id="fsb_close" style={{
+                                          color: rgbString(hsbToRgb(this.state.text_color)),
+                                          position:"absolute",
+                                          right:"8px",
+                                            top:"50%",
+                                            transform:"translateY(-50%)", color:"#002B38", 
+                                            fontFamily: "Helvertical, Arial, sans-serif", fontWeight: "bold",
+                                            fontSize:"16px",
+                                            textDecoration: "none"}}>X
+                                            </a>
+                                        </div>
+                                      ) : ('')}
+                                </div>
+                            
+                              </div>
+                            </div>
+                            <div className="fsb_tp_container">
+                              <div style={{
+                                backgroundImage: 'url(' + this.state.img + ')'
+                              }}>
+                                <div id="fsb_main_bar" className="fsb_tb_content" style={{
+                                  position: "relative", 
+                                  opacity: this.state.bg_color_opacity,
+                                  backgroundColor: rgbString(hsbToRgb(this.state.bg_color)),
+                                  color: rgbString(hsbToRgb(this.state.text_color)),
+                                  textAlign: "center",
+                                  fontSize: this.state.font_size + 'px',
+                                  fontWeight: "normal",
+                                  lineheight: "20px",
+                                  padding: this.state.padding + 'px',
+                                  fontFamily: this.state.font_family
+                                  }} >
+                                      {this.state.goal_msg}
+                                      { this.state.is_close_btn == 'yes' ? (
+                                        <div><a id="fsb_close" style={{
+                                          color: rgbString(hsbToRgb(this.state.text_color)),
+                                          position:"absolute",
+                                          right:"8px",
+                                            top:"50%",
+                                            transform:"translateY(-50%)", color:"#002B38", 
+                                            fontFamily: "Helvertical, Arial, sans-serif", fontWeight: "bold",
+                                            fontSize:"16px",
+                                            textDecoration: "none"}}>X
+                                            </a>
+                                        </div>
+                                      ) : ('')}
                                 </div>
                               </div>
                             </div>
@@ -850,7 +973,7 @@ class FreeShippingBar extends React.Component {
                                 <div key={index} style={{ 
                                   cursor: "pointer",
                                   margin: "10px 0", 
-                                  padding:"10px",
+                                  padding:"10px 50px",
                                   textAlign: "center",
                                    fontSize:background.font_size, 
                                    color:background.text_color, 
@@ -862,9 +985,8 @@ class FreeShippingBar extends React.Component {
                       })}
                     </Stack>
                     </FormLayout.Group>
-                    Upload Background Image:
-                    <input type="file" style={{marginBottom: "10px"}}></input>
-                      
+                    {/* Upload Background Image:
+                    <input type="file" style={{marginBottom: "10px"}}></input> */}
                 </FormLayout>
                   Fonts: 
                   <ButtonGroup>
@@ -1116,18 +1238,31 @@ class FreeShippingBar extends React.Component {
     })
   }
   onDelete = (id) => {
-    deleteBar(id).then(data => {
-      if(data.status == "success") {
-        swal("Successfully Deleted", {
-          icon: "success",
-        });
-        this.init();
-      } else {
-        swal("Failed", {
-          icon: "warning",
-        });
-      }
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover bar!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
     })
+    .then((willDelete) => {
+      if (willDelete) {
+        deleteBar(id).then(data => {
+          if(data.status == "success") {
+            swal("Successfully Deleted", {
+              icon: "success",
+            });
+            this.init();
+          } else {
+            swal("Failed", {
+              icon: "warning",
+            });
+          }
+        })
+      } else {
+        return
+      }
+    });
   }
 
   handleCancel = e => {
@@ -1148,12 +1283,12 @@ class FreeShippingBar extends React.Component {
         img: this.state.img,
         name: this.state.name,
         goal: this.state.goal,
-        goal_sec: this.state.goal_sec,
+        goal_sec: this.state.is_sec_goal == 1 ? this.state.goal_sec : 0,
         init_msg_start: this.state.init_msg_start,
-        init_msg_end: this.state.init_msg_start,
+        init_msg_end: this.state.init_msg_end,
         is_sec_goal: this.state.is_sec_goal, 
-        progress_msg_start: this.state.progress_msg_sec_start,
-        progress_msg_end: this.state.progress_msg_sec_end,
+        progress_msg_sec_start: this.state.progress_msg_sec_start,
+        progress_msg_sec_end: this.state.progress_msg_sec_end,
         progress_msg_start: this.state.progress_msg_start,
         progress_msg_end: this.state.progress_msg_end,
         goal_msg: this.state.goal_msg, 
@@ -1166,8 +1301,8 @@ class FreeShippingBar extends React.Component {
         cur_symbol: this.state.cur_symbol,
         is_auto_cur: this.state.is_auto_cur,
         bg_color: rgbString(hsbToRgb(this.state.bg_color)),
-        text_color: JSON.stringify(this.state.text_color),
-        special_color: JSON.stringify(this.state.special_color), 
+        text_color: rgbString(hsbToRgb(this.state.text_color)),
+        special_color: rgbString(hsbToRgb(this.state.special_color)), 
         bg_color_opacity: this.state.bg_color_opacity,
         font_size: this.state.font_size,
         font_family: this.state.font_family,
@@ -1180,10 +1315,26 @@ class FreeShippingBar extends React.Component {
         dev_target: this.state.dev_target,
         schedule: this.state.schedule,
         custom_code: this.state.custom_code,
+        display_url: this.state.display_url,
+        display_keyword: this.state.display_keyword,
+        exclude_keyword: this.state.exclude_keyword,
+        exclude_url: this.exclude_url,
+        sch_start: this.sch_start,
+        sch_end: this.sch_end
      }
      addBar(submit_data).then(data => {
-       console.log(data);
-       this.init();
+        if(data.status == 'success'){
+          this.init();
+          swal({
+            title: data.err_msg,
+            icon: "success",
+          })
+        }else {
+          swal({
+            title: data.err_msg,
+            icon: "warning",
+          })
+        }
      })
   };
   handleChange = (field) => {
@@ -1194,7 +1345,57 @@ class FreeShippingBar extends React.Component {
     this.setState({showForm: true})
     this.setState({template_id: 0})
   }
-
+  onEdit = (bar) => {
+    console.log(bar)
+    this.setState({
+      showForm: true,
+      shop_id: bar.shop_id,
+      bar_id: bar.id,
+      template_id: bar.template_id,
+      background_id: bar.background_id,
+      img: bar.img,
+      name: bar.name,
+      goal: String(bar.goal),
+      goal_sec: String(bar.goal_sec),
+      init_msg_start: bar.init_msg_start,
+      init_msg_end: bar.init_msg_end,
+      is_sec_goal: bar.is_sec_goal, 
+      progress_msg_sec_start: bar.progress_msg_sec_start,
+      progress_msg_sec_end: bar.progress_msg_sec_end,
+      progress_msg_start: bar.progress_msg_start,
+      progress_msg_end: bar.progress_msg_end,
+      goal_msg: bar.goal_msg, 
+      link_opt: bar.link_opt, 
+      link_url: bar.link_url,
+      is_link_new: bar.is_link_new,
+      is_close_btn: bar.is_close_btn,
+      position: bar.position, 
+      currency: bar.currency,
+      cur_symbol: bar.cur_symbol,
+      is_auto_cur: bar.is_auto_cur,
+      bg_color: this.rgbaStringtoHsb(bar.bg_color),
+      text_color: this.rgbaStringtoHsb(bar.text_color),
+      special_color: this.rgbaStringtoHsb(bar.special_color), 
+      bg_color_opacity: bar.bg_color_opacity,
+      font_size: String(bar.font_size),
+      font_family: bar.font_family,
+      padding: String(bar.padding),
+      disp_after: String(bar.disp_after),
+      delay_before: String(bar.delay_before),
+      time_fade: String(bar.time_fade),
+      display_page: bar.display_page,
+      exclude_page: bar.exclude_page,
+      dev_target: bar.dev_target,
+      schedule: bar.schedule,
+      custom_code: bar.custom_code,
+      display_keyword: bar.display_keyword,
+      display_url: bar.display_url,
+      exclude_keyword: bar.exclude_keyword,
+      exclude_url: bar.exclude_url,
+      sch_start: bar.sch_start,
+      sch_end: bar.sch_end
+   })
+  }
   onTemplate = (template) => {
     this.setState({template_id: template.id})
     if(template.type == 0){
@@ -1202,7 +1403,7 @@ class FreeShippingBar extends React.Component {
         bg_color:this.rgbaStringtoHsb(rgbString(this.hexToRgba(template.bg_color, 1))),
         text_color: this.rgbaStringtoHsb(rgbString(this.hexToRgba(template.text_color,1))),
         special_color: this.rgbaStringtoHsb(rgbString(this.hexToRgba(template.special_color,1))),
-        font_size: template.font_size,
+        font_size: String(template.font_size),
         font_family: template.font_family
       })
     } else {
@@ -1211,7 +1412,7 @@ class FreeShippingBar extends React.Component {
         bg_color:this.rgbaStringtoHsb(rgbString(this.hexToRgba(template.bg_color, 0))),
         text_color: this.rgbaStringtoHsb(rgbString(this.hexToRgba(template.text_color,1))),
         special_color: this.rgbaStringtoHsb(rgbString(this.hexToRgba(template.special_color,1))),
-        font_size: template.font_size,
+        font_size: String(template.font_size),
         font_family: template.font_family
       })
     }
@@ -1219,6 +1420,10 @@ class FreeShippingBar extends React.Component {
 
   onBackgroundSetting = (background) => {
     this.setState({background_id: background.id})
+    console.log(this.state.bg_color)
+    var bg_color_t = this.state.bg_color
+    bg_color_t.alpha = "0";
+    this.setState({bg_color: bg_color_t})
     this.setState({
       img: background.img,
       text_color: this.rgbaStringtoHsb(rgbString(this.hexToRgba(background.text_color,1)))

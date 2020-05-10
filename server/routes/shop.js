@@ -2,6 +2,21 @@ const Router = require('koa-router')
 const router = new Router()
 const Shop = require('../models/shop')
 
+const dotenv = require('dotenv')
+dotenv.config()
+const { API_VERSION } = process.env
+const ShopifyAPIClient = require("shopify-api-node");
+
+router.post(`/fsb/api/get_shop_info`, async ctx=> {
+    const {shop, accessToken} = ctx.session
+    const shopify = new ShopifyAPIClient({
+        shopName: shop,
+        accessToken: accessToken,
+    });
+    var currency = await shopify.shop.get()
+    ctx.body = currency.currency
+})
+
 router.post('/fsb/api/shops', async ctx => {
     await Shop.findAll()
             .then (shops => {

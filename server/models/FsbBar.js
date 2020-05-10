@@ -132,5 +132,26 @@ module.exports = db.sequelize.define(
         exclude_countries: {
             type: Sequelize.STRING
         },
+        img: {
+            type: Sequelize.STRING
+        },
+        is_sec_goal: {
+            type: Sequelize.TINYINT
+        },
+        progress_msg_sec_start: {
+            type: Sequelize.STRING
+        },
+        progress_msg_sec_end: {
+            type: Sequelize.STRING
+        },
+        goal_sec: {
+            type: Sequelize.FLOAT
+        },
+        font_family: {
+            type: Sequelize.STRING
+        },
+        exclude_page: {
+            type: Sequelize.STRING
+        },
     }
 )

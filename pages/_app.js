@@ -27,7 +27,35 @@ class MyApp extends App {
         <Head>
           <title>Free shipping bar</title>
           <meta charSet="utf-8" />
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
           <script src="./assets/js/jscolor.js"></script>
+          <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css" />
+
+          <link href="https://fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Dancing+Script" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Bangers" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet" type="text/css" />
+
+          <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Great+Vibes" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Crafty+Girls" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Mystery+Quest" rel="stylesheet" type="text/css" />
+
+          <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Unica+One" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Julius+Sans+One" rel="stylesheet" type="text/css" />
         </Head>
         <Provider config={config}>
             <AppProvider i18n={translations}>
