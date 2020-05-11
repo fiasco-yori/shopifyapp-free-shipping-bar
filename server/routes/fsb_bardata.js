@@ -2,8 +2,9 @@ const Router = require('koa-router')
 const router = new Router()
 const Shop = require('../models/Shop')
 const Fsb_bars = require('../models/FsbBar')
-
 const ShopifyAPIClient = require("shopify-api-node");
+
+const fetch = require("node-fetch");
 
 router.post('/fsb_get_bar/:shop', async ctx => {
     
@@ -25,7 +26,9 @@ router.post('/fsb_get_bar/:shop', async ctx => {
         var shopdata = await shopify.shop.get()
         shop_currency = shopdata.currency
     }
-
+    var cur_res = await fetch("http://api.openrates.io/latest?base="+shop_currency);
+    var cur_json = await cur_res.json();
+  
     await Fsb_bars.findOne({
         where: {
             shop_id: shop_id,
@@ -33,9 +36,17 @@ router.post('/fsb_get_bar/:shop', async ctx => {
         }
     })
     .then (data => {
-        console.log(shop_currency)
-        
-        //console.log(exchange_rate)
+        var exchange_rate = 1;
+        if(cur_json.rates) {
+            var cur_json_obj = JSON.parse(JSON.stringify(cur_json.rates), function (key, value) {
+                if (key == data.currency) {
+                  exchange_rate = value
+                  return value;
+                } else {
+                  return value;
+                }
+            });
+        }
         let display_page = (data.display_page == 'all' || data.display_page == 'home') ? data.display_page : data.display_page == 'url' ? data.display_url : data.display_page == 'keyword' ? data.display_keyword: data.display_page;
         
         let exclude_page = (data.exclude_page == 'no' || data.exclude_page == 'home') ? data.exclude_page : data.exclude_page == 'url' ? data.exclude_url : data.exclude_page == 'keyword' ? data.exclude_keyword: data.exclude_page;
@@ -52,11 +63,11 @@ router.post('/fsb_get_bar/:shop', async ctx => {
             close_option: data.is_close_btn == 'yes' ? true: false,
             countries: data.countries,
             currency_code: data.currency,
-            currency_exchange_rate: 1,
+            currency_exchange_rate: exchange_rate,
             currency_symbol: data.cur_symbol,
             custom_code: data.custom_code,
             display_page: display_page,
-            end_on: data.sch_end,
+            end_on: data.sch_end.replace('T', ' '),
             entire_bar_clickable: false,
             exclude_countries: "",
             exclude_page: exclude_page,
@@ -75,7 +86,7 @@ router.post('/fsb_get_bar/:shop', async ctx => {
             position: data.position,
             schedule_enabled: data.schedule == 'yes' ? true : false,
             show_time: data.disp_after,
-            start_on: data.sch_start,
+            start_on: data.sch_start.replace('T', ' '),
             target_device: data.dev_target,
             text_color_one: data.text_color,
             text_color_two: data.special_color,

@@ -23,3 +23,8 @@
     border: none;
     outline: none;
 }
+.datetimepicker {
+    padding: 3px;
+    font-size: 14px;
+}
+

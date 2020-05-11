@@ -19,7 +19,8 @@ import {
   ColorPicker,
   Popover,
   RangeSlider,
-  Collapsible
+  Collapsible,
+  Caption
 } from '@shopify/polaris';
 import {  
   hsbToRgb,
@@ -44,10 +45,19 @@ import { getFontList } from "./server/fontFunctions";
 import { getBarList, addBar,activateBar,pauseBar, deleteBar,duplicateBar} from "./server/barFunctions";
 import { getShopInfo} from "./server/shopFunctions";
 
+var datetime = require('node-datetime');
+
 class FreeShippingBar extends React.Component {
   constructor(props){
       super(props);
       let cur_data = [];
+
+      var today_datetime_create = datetime.create();
+      var today_dateTime = today_datetime_create.format('Y-m-dTH:M');
+      var today_datetime_create_end = datetime.create();
+      today_datetime_create_end.offsetInDays(3);
+      var today_dateTime_end = today_datetime_create_end.format('Y-m-dTH:M');
+
       country_cur_data.map((citem, index) => {
         cur_data.push({
           label:citem.country + ' - ' + citem.code,
@@ -158,13 +168,13 @@ class FreeShippingBar extends React.Component {
         display_keyword: '',
         exclude_keyword: '',
         exclude_url: '',
-        sch_end: '',
-        sch_start: ''
+        sch_start: today_dateTime,
+        sch_end: today_dateTime_end
     };
     
-
-    
     this.onChange = this.onChange.bind(this)
+    this.onChange_sch_start = this.onChange_sch_start.bind(this)
+    this.onChange_sch_end = this.onChange_sch_end.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
     this.handleColorChange_bg = this.handleColorChange_bg.bind(this)
     this.handleRgbChange_bg = this.handleRgbChange_bg.bind(this) 
@@ -201,7 +211,12 @@ class FreeShippingBar extends React.Component {
   onChange = event => {
     this.setState({bg_color_js: event.target.value})
   }
-
+  onChange_sch_start = event => {
+    this.setState({sch_start: event.target.value})
+  }
+  onChange_sch_end = event => {
+    this.setState({sch_end: event.target.value})
+  }
   handleContentToggle = () => {
     this.setState({content_active: !this.state.content_active})
   }
@@ -1082,12 +1097,48 @@ class FreeShippingBar extends React.Component {
                         selected={display_page}
                         onChange={this.handleChange('display_page')}
                       />
+                      { this.state.display_page == 'url' ? (
+                          <TextField
+                          value={display_url}
+                          onChange={this.handleChange('display_url')}
+                          label="Display URL: "
+                          type="text"
+                          helpText="Input the link address above (you can copy and paste the page URL directly into the field)"
+                          />
+                      ) : ('')}
+                      { this.state.display_page == 'keyword' ? (
+                          <TextField
+                          value={display_keyword}
+                          onChange={this.handleChange('display_keyword')}
+                          label="Display Keyword: "
+                          type="text"
+                          helpText="Input the Keywords above. Use commas to separate if there are multiple keywords. The bar displays if any keyword is matched"
+                          />
+                      ) : ('')}
                       <ChoiceList
                         title="Exclude Page:"
                         choices={exclude_options}
                         selected={exclude_page}
                         onChange={this.handleChange('exclude_page')}
                       />
+                      { this.state.exclude_page == 'url' ? (
+                          <TextField
+                          value={exclude_url}
+                          onChange={this.handleChange('exclude_url')}
+                          label="Exclude URL: "
+                          type="text"
+                          helpText="Input the link address above (you can copy and paste the page URL directly into the field)"
+                          />
+                      ) : ('')}
+                      { this.state.exclude_page == 'keyword' ? (
+                          <TextField
+                          value={exclude_keyword}
+                          onChange={this.handleChange('exclude_keyword')}
+                          label="Exclude Keyword: "
+                          type="text"
+                          helpText="Input the Keywords above. Use commas to separate if there are multiple keywords. The bar does not display if any keyword is matched."
+                          />
+                      ) : ('')}
                       <ChoiceList
                         title="Device Target:"
                         choices={dev_target_options}
@@ -1100,6 +1151,14 @@ class FreeShippingBar extends React.Component {
                         selected={schedule}
                         onChange={this.handleChange('schedule')}
                       />
+                      <div style={{display: this.state.schedule=='yes'? 'block':'none'}}>
+                      <Stack>
+                      <input type="datetime-local" className="datetimepicker" value={sch_start} onChange={this.onChange_sch_start.bind(this)}></input>
+                      -
+                      <input type="datetime-local" className="datetimepicker" value={sch_end} onChange={this.onChange_sch_end.bind(this)}></input>
+                      </Stack>
+                      <Caption>Define the Start Time and End Time of the display period, minimum duration is 24 hours</Caption>
+                      </div>
                   </FormLayout>
                 </Collapsible>
                 </Card>
@@ -1275,6 +1334,7 @@ class FreeShippingBar extends React.Component {
 
   handleSubmit = e => {
      e.preventDefault()
+     console.log(this.state.sch_start)
      let submit_data = {
         shop_id: this.state.shop_id,
         bar_id: this.state.bar_id,
@@ -1296,7 +1356,7 @@ class FreeShippingBar extends React.Component {
         link_url: this.state.link_url,
         is_link_new: this.state.is_link_new,
         is_close_btn: this.state.is_close_btn,
-        position: this.state.position, 
+        position: Array.isArray(this.state.position)? this.state.position[0]: this.state.position, 
         currency: this.state.currency,
         cur_symbol: this.state.cur_symbol,
         is_auto_cur: this.state.is_auto_cur,
@@ -1310,17 +1370,17 @@ class FreeShippingBar extends React.Component {
         disp_after: this.state.disp_after,
         delay_before: this.state.delay_before,
         time_fade: this.state.time_fade,
-        display_page: this.state.display_page,
-        exclude_page: this.state.exclude_page,
-        dev_target: this.state.dev_target,
-        schedule: this.state.schedule,
+        display_page: Array.isArray(this.state.display_page)? this.state.display_page[0]: this.state.display_page,
+        exclude_page: Array.isArray(this.state.exclude_page)? this.state.exclude_page[0]: this.state.exclude_page,
+        dev_target: Array.isArray(this.state.dev_target)? this.state.dev_target[0]: this.state.dev_target,
+        schedule: Array.isArray(this.state.schedule)? this.state.schedule[0]: this.state.schedule,
         custom_code: this.state.custom_code,
         display_url: this.state.display_url,
         display_keyword: this.state.display_keyword,
         exclude_keyword: this.state.exclude_keyword,
-        exclude_url: this.exclude_url,
-        sch_start: this.sch_start,
-        sch_end: this.sch_end
+        exclude_url: this.state.exclude_url,
+        sch_start: this.state.sch_start,
+        sch_end: this.state.sch_end
      }
      addBar(submit_data).then(data => {
         if(data.status == 'success'){
@@ -1346,7 +1406,6 @@ class FreeShippingBar extends React.Component {
     this.setState({template_id: 0})
   }
   onEdit = (bar) => {
-    console.log(bar)
     this.setState({
       showForm: true,
       shop_id: bar.shop_id,

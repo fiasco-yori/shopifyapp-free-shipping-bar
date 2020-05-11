@@ -44,6 +44,7 @@
     "material-ui-color-picker": "^3.5.0",
     "mysql2": "^2.1.0",
     "next": "^9.3.5",
+    "node-datetime": "^2.1.2",
     "node-fetch": "^2.6.0",
     "nodemon": "^2.0.3",
     "nonce": "^1.0.4",

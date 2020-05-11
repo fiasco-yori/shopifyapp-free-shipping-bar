@@ -1,5 +1,5 @@
 function hextom_fsb() {
-    var shop_currency='', e, a, t, i, o, r, n, s, d, c = "//7f6b4f02.ngrok.io/", l = "", p = ["CLP", "HRK", "SEK", "ISK", "NOK", "CZK", "DKK", "EUR", "RON", "TRY"], h = {
+    var shop_currency='', e, a, t, i, o, r, n, s, d, c = "//b0aacfb3.ngrok.io/", l = "", p = ["CLP", "HRK", "SEK", "ISK", "NOK", "CZK", "DKK", "EUR", "RON", "TRY"], h = {
         DZD: "DA",
         NAD: "N$",
         GHS: "GH¢",
