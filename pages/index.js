@@ -180,30 +180,29 @@ class FreeShippingBar extends React.Component {
     this.handleRgbChange_bg = this.handleRgbChange_bg.bind(this) 
       
     getBarList().then(datas => {
-        this.setState({bars: [...datas]}, () => 
-        {
-        }
-      )
-      
+        this.setState({bars: [...datas.bar]})
+        this.setState({templates: [...datas.templates]})
+        this.setState({fonts: [...datas.fonts]})
+        this.setState({backgrounds: [...datas.backgrounds]})
     })
-    getTemplateList().then(datas => {
-      this.setState({templates: [...datas]}, 
-        () => {
-        }
-      )
-    })
-    getFontList().then(datas => {
-      this.setState({fonts: [...datas]}, 
-        () => {
-        }
-      )
-    })
-    getBackgroundList().then(datas => {
-      this.setState({backgrounds: [...datas]}, 
-        () => {
-        }
-      )
-    })
+    // getTemplateList().then(datas => {
+    //   this.setState({templates: [...datas]}, 
+    //     () => {
+    //     }
+    //   )
+    // })
+    // getFontList().then(datas => {
+    //   this.setState({fonts: [...datas]}, 
+    //     () => {
+    //     }
+    //   )
+    // })
+    // getBackgroundList().then(datas => {
+    //   this.setState({backgrounds: [...datas]}, 
+    //     () => {
+    //     }
+    //   )
+    // })
 
 
   }
@@ -1225,32 +1224,37 @@ class FreeShippingBar extends React.Component {
     this.setState({bar_id: 0})
     this.setState({template_id: 0})
     this.setState({background_id: 0})
-
     getBarList().then(datas => {
-        this.setState({bars: [...datas]}, () => 
-        {
-        }
-      )
+        this.setState({bars: [...datas.bar]})
+        this.setState({templates: [...datas.templates]})
+        this.setState({fonts: [...datas.fonts]})
+        this.setState({backgrounds: [...datas.backgrounds]})
+    })
+    // getBarList().then(datas => {
+    //     this.setState({bars: [...datas]}, () => 
+    //     {
+    //     }
+    //   )
       
-    })
-    getTemplateList().then(datas => {
-      this.setState({templates: [...datas]}, 
-        () => {
-        }
-      )
-    })
-    getFontList().then(datas => {
-      this.setState({fonts: [...datas]}, 
-        () => {
-        }
-      )
-    })
-    getBackgroundList().then(datas => {
-      this.setState({backgrounds: [...datas]}, 
-        () => {
-        }
-      )
-    })
+    // })
+    // getTemplateList().then(datas => {
+    //   this.setState({templates: [...datas]}, 
+    //     () => {
+    //     }
+    //   )
+    // })
+    // getFontList().then(datas => {
+    //   this.setState({fonts: [...datas]}, 
+    //     () => {
+    //     }
+    //   )
+    // })
+    // getBackgroundList().then(datas => {
+    //   this.setState({backgrounds: [...datas]}, 
+    //     () => {
+    //     }
+    //   )
+    // })
   }
   onPause = (data) => {
     let pause_data = {id: data.id}
@@ -1334,7 +1338,6 @@ class FreeShippingBar extends React.Component {
 
   handleSubmit = e => {
      e.preventDefault()
-     console.log(this.state.sch_start)
      let submit_data = {
         shop_id: this.state.shop_id,
         bar_id: this.state.bar_id,
