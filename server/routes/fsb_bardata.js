@@ -2,6 +2,9 @@ const Router = require('koa-router')
 const router = new Router()
 const Shop = require('../models/Shop')
 const Fsb_bars = require('../models/FsbBar')
+const FsbBackground = require('../models/FsbBackground')
+const FsbFont = require('../models/FsbFont')
+const Fsb_template = require('../models/FsbTemplate')
 const ShopifyAPIClient = require("shopify-api-node");
 
 const fetch = require("node-fetch");
@@ -17,6 +20,7 @@ router.post('/fsb_get_bar/:shop', async ctx => {
             name: shop_name
         }
     })
+
     if(getShop.id) {
         shop_id = getShop.id
         const shopify = new ShopifyAPIClient({
@@ -26,9 +30,9 @@ router.post('/fsb_get_bar/:shop', async ctx => {
         var shopdata = await shopify.shop.get()
         shop_currency = shopdata.currency
     }
+
     var cur_res = await fetch("http://api.openrates.io/latest?base="+shop_currency);
     var cur_json = await cur_res.json();
-  
     await Fsb_bars.findOne({
         where: {
             shop_id: shop_id,
@@ -36,6 +40,7 @@ router.post('/fsb_get_bar/:shop', async ctx => {
         }
     })
     .then (data => {
+        
         var exchange_rate = 1;
         if(cur_json.rates) {
             var cur_json_obj = JSON.parse(JSON.stringify(cur_json.rates), function (key, value) {
@@ -67,7 +72,7 @@ router.post('/fsb_get_bar/:shop', async ctx => {
             currency_symbol: data.cur_symbol,
             custom_code: data.custom_code,
             display_page: display_page,
-            end_on: data.sch_end.replace('T', ' '),
+            end_on: data.sch_end ? data.sch_end.replace('T', ' '): '',
             entire_bar_clickable: false,
             exclude_countries: "",
             exclude_page: exclude_page,
@@ -86,7 +91,7 @@ router.post('/fsb_get_bar/:shop', async ctx => {
             position: data.position,
             schedule_enabled: data.schedule == 'yes' ? true : false,
             show_time: data.disp_after,
-            start_on: data.sch_start.replace('T', ' '),
+            start_on: data.sch_start ? data.sch_start.replace('T', ' ') : '',
             target_device: data.dev_target,
             text_color_one: data.text_color,
             text_color_two: data.special_color,
@@ -100,22 +105,30 @@ router.post('/fsb_get_bar/:shop', async ctx => {
             record: false,
             shop_active: "yes"
         }
+        
         ctx.body = send_data
     })
     .catch(err => {
+        console.log(err)
         ctx.body = []
     })
 })
 
 router.post('/fsb/api/fsb_bardatas', async ctx => {
     const {shop, accessToken} = ctx.session
+    console.log('session:'+ accessToken)
     let shop_id = 0, getShop;
     getShop = await Shop.findOne({
         where: {
             name: shop
-            ,accessToken: accessToken
+            //,accessToken: accessToken
         }
     })
+
+    let get_backgrounds = await FsbBackground.findAll()
+    let get_fonts = await FsbFont.findAll()
+    let get_templates = await Fsb_template.findAll()
+            
     if(getShop.id) {
         shop_id = getShop.id
     }
@@ -125,7 +138,7 @@ router.post('/fsb/api/fsb_bardatas', async ctx => {
         }
     })
     .then (datas => {
-        ctx.body = datas
+        ctx.body = {bar: datas, templates: get_templates, fonts: get_fonts, backgrounds: get_backgrounds}
     })
     .catch(err => {
         ctx.body = []

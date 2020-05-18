@@ -1024,24 +1024,41 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
       });
       Object(_server_barFunctions__WEBPACK_IMPORTED_MODULE_11__["getBarList"])().then(datas => {
         this.setState({
-          bars: [...datas]
-        }, () => {});
-      });
-      Object(_server_templateFunctions__WEBPACK_IMPORTED_MODULE_8__["getTemplateList"])().then(datas => {
+          bars: [...datas.bar]
+        });
         this.setState({
-          templates: [...datas]
-        }, () => {});
-      });
-      Object(_server_fontFunctions__WEBPACK_IMPORTED_MODULE_10__["getFontList"])().then(datas => {
+          templates: [...datas.templates]
+        });
         this.setState({
-          fonts: [...datas]
-        }, () => {});
-      });
-      Object(_server_backgroundFunctions__WEBPACK_IMPORTED_MODULE_9__["getBackgroundList"])().then(datas => {
+          fonts: [...datas.fonts]
+        });
         this.setState({
-          backgrounds: [...datas]
-        }, () => {});
-      });
+          backgrounds: [...datas.backgrounds]
+        });
+      }); // getBarList().then(datas => {
+      //     this.setState({bars: [...datas]}, () => 
+      //     {
+      //     }
+      //   )
+      // })
+      // getTemplateList().then(datas => {
+      //   this.setState({templates: [...datas]}, 
+      //     () => {
+      //     }
+      //   )
+      // })
+      // getFontList().then(datas => {
+      //   this.setState({fonts: [...datas]}, 
+      //     () => {
+      //     }
+      //   )
+      // })
+      // getBackgroundList().then(datas => {
+      //   this.setState({backgrounds: [...datas]}, 
+      //     () => {
+      //     }
+      //   )
+      // })
     });
 
     _defineProperty(this, "onPause", data => {
@@ -1135,7 +1152,6 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
 
     _defineProperty(this, "handleSubmit", e => {
       e.preventDefault();
-      console.log(this.state.sch_start);
       let submit_data = {
         shop_id: this.state.shop_id,
         bar_id: this.state.bar_id,
@@ -1500,24 +1516,35 @@ class FreeShippingBar extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
     this.handleRgbChange_bg = this.handleRgbChange_bg.bind(this);
     Object(_server_barFunctions__WEBPACK_IMPORTED_MODULE_11__["getBarList"])().then(datas => {
       this.setState({
-        bars: [...datas]
-      }, () => {});
-    });
-    Object(_server_templateFunctions__WEBPACK_IMPORTED_MODULE_8__["getTemplateList"])().then(datas => {
+        bars: [...datas.bar]
+      });
       this.setState({
-        templates: [...datas]
-      }, () => {});
-    });
-    Object(_server_fontFunctions__WEBPACK_IMPORTED_MODULE_10__["getFontList"])().then(datas => {
+        templates: [...datas.templates]
+      });
       this.setState({
-        fonts: [...datas]
-      }, () => {});
-    });
-    Object(_server_backgroundFunctions__WEBPACK_IMPORTED_MODULE_9__["getBackgroundList"])().then(datas => {
+        fonts: [...datas.fonts]
+      });
       this.setState({
-        backgrounds: [...datas]
-      }, () => {});
-    });
+        backgrounds: [...datas.backgrounds]
+      });
+    }); // getTemplateList().then(datas => {
+    //   this.setState({templates: [...datas]}, 
+    //     () => {
+    //     }
+    //   )
+    // })
+    // getFontList().then(datas => {
+    //   this.setState({fonts: [...datas]}, 
+    //     () => {
+    //     }
+    //   )
+    // })
+    // getBackgroundList().then(datas => {
+    //   this.setState({backgrounds: [...datas]}, 
+    //     () => {
+    //     }
+    //   )
+    // })
   }
 
   //----bg_color----------
